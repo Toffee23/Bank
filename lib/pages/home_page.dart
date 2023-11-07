@@ -9,6 +9,8 @@ import 'package:portfolio/utilities/my_list_tile.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -17,9 +19,25 @@ class _HomePageState extends State<HomePage> {
   final PageController _controller = PageController();
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
+      appBar: AppBar(
+        backgroundColor: Colors.grey.shade400,
+        title: const Text('My Cards'),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.add)
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         backgroundColor: Colors.pink,
@@ -54,41 +72,10 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: SafeArea(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 20),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Row(
-                    children: [
-                      Text(
-                        'My',
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'Cards',
-                        style: TextStyle(fontSize: 28),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[400],
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.add),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 25),
             SizedBox(
               height: 200,
               child: PageView(
@@ -120,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            const SizedBox(height: 25),
+            const SizedBox(height: 18),
             SmoothPageIndicator(
               controller: _controller,
               count: 3,
@@ -128,77 +115,74 @@ class _HomePageState extends State<HomePage> {
                 activeDotColor: Colors.grey.shade800,
               ),
             ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                MyButton(
+                  iconImagePath: 'icons/send-money.png',
+                  buttonText: 'Send',
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SendPage(),
+                    ),
+                  ),
+                ),
+                MyButton(
+                  iconImagePath: 'icons/deposit.png',
+                  buttonText: 'Deposit',
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DepositPage(),
+                    ),
+                  ),
+                ),
+                MyButton(
+                  iconImagePath: 'icons/money-withdrawal.png',
+                  buttonText: 'withdraw',
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const WithDrawPage(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SendPage(),
-                      ),
-                    ),
-                    child: const MyButton(
-                      iconImagePath: 'icons/send-money.png',
-                      buttonText: 'Send',
-                    ),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.only(left: 18.0),
+                child: Text(
+                  'Services :',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.blueGrey
                   ),
-                  GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const DepositPage(),
-                      ),
-                    ),
-                    child: const MyButton(
-                      iconImagePath: 'icons/deposit.png',
-                      buttonText: 'Deposit',
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const WithDrawPage(),
-                      ),
-                    ),
-                    child: const MyButton(
-                      iconImagePath: 'icons/money-withdrawal.png',
-                      buttonText: 'withdraw',
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-            const SizedBox(height: 40),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25.0),
-              child: Column(
-                children: [
-                  const MyListTile(
-                    iconImagePath: 'icons/analysis.png',
-                    tileTitle: 'Statistics',
-                    tileSubTitle: 'Payment and Income',
+            MyListTile(
+              onTap: () {},
+              iconImagePath: 'icons/analysis.png',
+              tileTitle: 'Statistics',
+              tileSubTitle: 'Payment and Income',
+            ),
+            MyListTile(
+              iconImagePath: 'icons/cash-flow.png',
+              tileTitle: 'Transactions',
+              tileSubTitle: 'Transaction History',
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TransactionPage(
+                    transactions: [],
                   ),
-                  GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TransactionPage(
-                          transactions: [],
-                        ),
-                      ),
-                    ),
-                    child: const MyListTile(
-                      iconImagePath: 'icons/cash-flow.png',
-                      tileTitle: 'Transactions',
-                      tileSubTitle: 'Transaction History',
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ],

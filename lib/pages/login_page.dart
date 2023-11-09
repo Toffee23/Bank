@@ -2,29 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/pages/home_page.dart';
 
-class LoginPage extends StatefulWidget {
+import '../utilities/text_field.dart';
+
+class LoginPage extends StatelessWidget {
   final Function()? onTap;
+
   const LoginPage({Key? key, required this.onTap}) : super(key: key);
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Icon(
-                Icons.phone_android,
-                size: 100,
-              ),
-              const SizedBox(height: 75),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.phone_android,
+                  size: 100,
+                ),
+                const SizedBox(height: 75),
               // Hello again!
               Text(
                 'Hello Again!',
@@ -42,75 +42,43 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 50),
 
               // email textfield
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.only(left: 20.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Email",
-                      ),
-                    ),
-                  ),
+
+                const LoginField(
+                  hintText: "Email"
                 ),
-              ),
+                const LoginField(
+                  hintText: "Password"
+                ),
 
               const SizedBox(height: 10),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.only(left: 20.0),
-                    child: TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Password",
-                      ),
-                    ),
+              // sign in button
+              ElevatedButton(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
                   ),
                 ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // sign in button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(12),
+                style: ButtonStyle(
+                  shape: MaterialStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)
+                    )
                   ),
+                  minimumSize: const MaterialStatePropertyAll(
+                    Size(double.infinity, 42)
+                  )
+                ),
+                child: const SizedBox(
+                  width: double.infinity,
                   child: Center(
-                    child: GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                        ),
-                      ),
-                      child: const Text(
-                        'Sign In',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
+                    child: Text(
+                      'Sign In',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
                       ),
                     ),
                   ),
@@ -127,8 +95,9 @@ class _LoginPageState extends State<LoginPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(width: 8),
                   GestureDetector(
-                    onTap: widget.onTap,
+                    onTap: onTap,
                     child: const Text(
                       'Register Now',
                       style: TextStyle(

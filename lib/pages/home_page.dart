@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             SizedBox(
-              height: 200,
+              height: 160,
               child: PageView(
                 scrollDirection: Axis.horizontal,
                 controller: _controller,
@@ -88,21 +88,21 @@ class _HomePageState extends State<HomePage> {
                     cardNumber: 12345678,
                     expiryMonth: 10,
                     expiryYear: 24,
-                    color: Colors.deepPurple[400],
+                    color: Colors.deepPurple.shade400,
                   ),
                   MyCard(
                     balance: 67839.9,
                     cardNumber: 12345678,
                     expiryMonth: 02,
                     expiryYear: 20,
-                    color: Colors.orange[400],
+                    color: Colors.orange.shade400,
                   ),
                   MyCard(
                     balance: 093920.38,
                     cardNumber: 12345678,
                     expiryMonth: 08,
                     expiryYear: 12,
-                    color: Colors.blue[400],
+                    color: Colors.blue.shade400,
                   ),
                 ],
               ),
@@ -180,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => TransactionPage(
-                    transactions: [],
+                    transactions: transactions.map((e) => Transaction.fromJson(e)).toList(),
                   ),
                 ),
               ),
@@ -191,3 +191,66 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+final transactions = [
+  {
+    'description': 'Send Money to My Wife',
+    'amount': '\$25.00',
+    'type': 'debit',
+    'date': '21 October 2023, 11:16PM'
+  },
+  {
+    'description': 'Received from Eric R.',
+    'amount': '\$96.00',
+    'type': 'credit',
+    'date': '22 October 2023, 9:16AM'
+  },
+  {
+    'description': 'Pocket allowance',
+    'amount': '\$100.00',
+    'type': 'credit',
+    'date': '22 October 2023, 12:45AM'
+  },
+  {
+    'description': 'Send Money to Janet G.',
+    'amount': '\$118.00',
+    'type': 'debit',
+    'date': '22 October 2023, 1:10PM'
+  },
+  {
+    'description': 'Send Money to Bakong A',
+    'amount': '\$1,200.00',
+    'type': 'debit',
+    'date': '23 October 2023, 11:16PM'
+  },
+  {
+    'description': 'Pocket allowance',
+    'amount': '\$100.00',
+    'type': 'credit',
+    'date': '24 October 2023, 10:15AM'
+  },
+  {
+    'description': 'Transfer to own account',
+    'amount': '\$150.00',
+    'type': 'debit',
+    'date': '24 October 2023, 8:28AM'
+  },
+  {
+    'description': 'Payment from POS',
+    'amount': '\$82.99',
+    'type': 'debit',
+    'date': '21 October 2023, 11:16PM'
+  },
+  {
+    'description': 'Payment for Electricity bill',
+    'amount': '\$152.52',
+    'type': 'debit',
+    'date': '21 October 2023, 11:16PM'
+  },
+  {
+    'description': 'October Salary',
+    'amount': '\$152.52',
+    'type': 'credit',
+    'date': '21 October 2023, 11:16PM'
+  },
+];

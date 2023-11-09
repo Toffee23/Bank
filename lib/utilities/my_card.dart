@@ -5,7 +5,7 @@ class MyCard extends StatelessWidget {
   final int cardNumber;
   final int expiryMonth;
   final int expiryYear;
-  final color;
+  final Color color;
 
   const MyCard({
     Key? key,
@@ -22,7 +22,7 @@ class MyCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 25),
       child: Container(
         width: 300,
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(16),
@@ -31,9 +31,6 @@ class MyCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // ignore: prefer_const_constructors
-
-            // ignore: prefer_const_constructors
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -45,12 +42,12 @@ class MyCard extends StatelessWidget {
                 ),
                 Image.asset(
                   'icons/visa.png',
-                  height: 60,
+                  height: 50,
                 )
               ],
             ),
             Text(
-              '\$' + balance.toString(),
+              '\$$balance',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 36,
@@ -58,7 +55,8 @@ class MyCard extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 30),
+            const Spacer(),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -71,7 +69,7 @@ class MyCard extends StatelessWidget {
                 ),
                 // card expiry date
                 Text(
-                  expiryMonth.toString() + '/' + expiryYear.toString(),
+                  '$expiryMonth/$expiryYear',
                   style: const TextStyle(
                     color: Colors.white,
                   ),

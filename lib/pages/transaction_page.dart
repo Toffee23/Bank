@@ -18,7 +18,7 @@ class TransactionPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            height: 100,
+            height: 120,
             width: double.infinity,
             margin: const EdgeInsets.all(15),
             padding: const EdgeInsets.all(15),
@@ -87,27 +87,36 @@ class TransactionPage extends StatelessWidget {
           const Divider(height: 0),
           Expanded(
             child: ListView.separated(
-              itemCount: 17,
+              itemCount: transactions.length,
               separatorBuilder: (_, __) => const Divider(height: 0),
               itemBuilder: (context, index) {
-                // Transaction transaction = transactions[index];
+                Transaction transaction = transactions[index];
                 return ListTile(
-                  leading: CircleAvatar(
+                  leading: const CircleAvatar(
                     child: Icon(Icons.monetization_on),
                   ), //transaction
-                  title: const Text('Transfer From Wema Bank'),
-                  titleTextStyle: TextStyle(
+                  title: Text(
+                    transaction.description,
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.blueGrey.shade700
+                  )
                   ),
-                  subtitle: const Text(
-                    '7/11/2023',
-                    style: TextStyle(
+                  subtitle: Text(
+                    transaction.date,
+                    style: const TextStyle(
                       color: Colors.blueGrey
                     ),
                   ),
-                  trailing: Text('\$23,000'), // Transaction amount
+                  trailing: Text(
+                    '${transaction.type == 'credit' ? '+' : '-'}${transaction.amount}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: transaction.type == 'credit' ?
+                        Colors.green : Colors.red
+                    ),
+                  ), // Transaction amount
                   onTap: () {
                     // Handle onTap event (if needed)
                   },
@@ -124,62 +133,22 @@ class TransactionPage extends StatelessWidget {
 class Transaction {
   final String description;
   final String date;
-  final double amount;
+  final String type;
+  final String amount;
 
   Transaction({
     required this.description,
     required this.date,
+    required this.type,
     required this.amount,
   });
-}
 
-final transactions = [
-  {
-    'desc': 'Send Money to My Wife',
-    'amount': '\$25.00',
-    'type': 'debit',
-    'date': '21 October 2023, 11:16PM'
-  },
-  {
-    'desc': 'Received from Eric R.',
-    'amount': '\$96.00',
-    'type': 'credit',
-    'date': '21 October 2023, 11:16PM'
-  },
-  {
-    'desc': 'Send Money to Janet G.',
-    'amount': '\$118.00',
-    'type': 'debit',
-    'date': '21 October 2023, 11:16PM'
-  },
-  {
-    'desc': 'Send Money to Bakong A',
-    'amount': '\$1,200.00',
-    'type': 'debit',
-    'date': '21 October 2023, 11:16PM'
-  },
-  {
-    'desc': 'Transfer to own account',
-    'amount': '\$150.00',
-    'type': 'debit',
-    'date': '21 October 2023, 11:16PM'
-  },
-  {
-    'desc': 'Payment from POS',
-    'amount': '\$82.99',
-    'type': 'debit',
-    'date': '21 October 2023, 11:16PM'
-  },
-  {
-    'desc': 'Payment for Electricity bill',
-    'amount': '\$152.52',
-    'type': 'debit',
-    'date': '21 October 2023, 11:16PM'
-  },
-  {
-    'desc': 'October Salary',
-    'amount': '\$152.52',
-    'type': 'credit',
-    'date': '21 October 2023, 11:16PM'
-  },
-];
+  factory Transaction.fromJson(Map<String, dynamic> json) {
+    return Transaction(
+      description: json['description'],
+      date: json['date'],
+      type: json['type'],
+      amount: json['amount'],
+    );
+  }
+}

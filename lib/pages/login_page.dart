@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/pages/home_page.dart';
+import 'package:portfolio/pages/register_page.dart';
 
 import '../utilities/text_field.dart';
 
@@ -17,14 +18,13 @@ class LoginPage extends StatelessWidget {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(25.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.phone_android,
-                  size: 100,
-                ),
-                const SizedBox(height: 75),
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const Icon(
+                Icons.phone_android,
+                size: 100,
+              ),
+              const SizedBox(height: 75),
               // Hello again!
               Text(
                 'Hello Again!',
@@ -43,12 +43,8 @@ class LoginPage extends StatelessWidget {
 
               // email textfield
 
-                const LoginField(
-                  hintText: "Email"
-                ),
-                const LoginField(
-                  hintText: "Password"
-                ),
+              const LoginField(hintText: "Email"),
+              const LoginField(hintText: "Password"),
 
               const SizedBox(height: 10),
 
@@ -61,15 +57,10 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 style: ButtonStyle(
-                  shape: MaterialStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0)
-                    )
-                  ),
-                  minimumSize: const MaterialStatePropertyAll(
-                    Size(double.infinity, 42)
-                  )
-                ),
+                    shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0))),
+                    minimumSize: const MaterialStatePropertyAll(
+                        Size(double.infinity, 42))),
                 child: const SizedBox(
                   width: double.infinity,
                   child: Center(
@@ -97,7 +88,14 @@ class LoginPage extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   GestureDetector(
-                    onTap: onTap,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RegisterPage(
+                          onTap: () {},
+                        ),
+                      ),
+                    ),
                     child: const Text(
                       'Register Now',
                       style: TextStyle(

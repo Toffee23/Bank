@@ -1,200 +1,179 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/pages/controllers.dart';
+import 'package:portfolio/utilities/text_field.dart';
 
-class RegisterPage extends StatefulWidget {
-  final Function()? onTap;
-  const RegisterPage({Key? key, required this.onTap}) : super(key: key);
+final obscureText1Provider = StateProvider<bool>((ref) => true);
+final obscureText2Provider = StateProvider<bool>((ref) => true);
+
+class RegisterPage extends ConsumerStatefulWidget {
+  const RegisterPage({Key? key}) : super(key: key);
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  ConsumerState<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
-  final emailController = TextEditingController();
-  final phoneNumberController = TextEditingController();
-  final password1Controller = TextEditingController();
-  final password2Controller = TextEditingController();
+class _RegisterPageState extends ConsumerState<RegisterPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
+  final _password1Controller = TextEditingController();
+  final _password2Controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _phoneNumberController.dispose();
+    _password1Controller.dispose();
+    _password2Controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[300],
-      body: SafeArea(
-        child: Center(
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        backgroundColor: Colors.grey[300],
+        body: Center(
           child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 25.0),
             child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Icon(
-                Icons.phone_android,
-                size: 100,
-              ),
-              const SizedBox(height: 75),
-              // Hello again!
-              Text(
-                'Hello Again!',
-                style: GoogleFonts.bebasNeue(
-                  fontSize: 52,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                const SizedBox(height: 40),
+                const Icon(
+                  Icons.phone_android,
+                  size: 100,
                 ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Welcome back',
-                style: TextStyle(
-                  fontSize: 20,
-                ),
-              ),
-              const SizedBox(height: 50),
-
-              // email textfield
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(12),
+                const SizedBox(height: 40),
+                Text(
+                  'Hello Again!',
+                  style: GoogleFonts.bebasNeue(
+                    fontSize: 52,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: TextField(
-                      controller: emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Email",
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'Welcome back',
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+                const SizedBox(height: 50),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <CustomTextFormField>[
+                      CustomTextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        hintText: 'Email',
+                        prefixIcon: const Icon(CupertinoIcons.mail),
+                        validator: Controller.emailValidator,
                       ),
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: TextField(
-                      controller: phoneNumberController,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Username",
+                      CustomTextFormField(
+                        controller: _phoneNumberController,
+                        keyboardType: TextInputType.phone,
+                        hintText: 'Phone number',
+                        prefixText: '+234 ',
+                        prefixIcon: const Icon(CupertinoIcons.phone),
+                        validator: Controller.phoneNumberValidator,
                       ),
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: TextField(
-                      controller: password1Controller,
-                      textInputAction: TextInputAction.next,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Password",
+                      CustomTextFormField(
+                        controller: _password1Controller,
+                        obscureText: ref.watch(obscureText1Provider),
+                        hintText: 'Password',
+                        prefixIcon: const Icon(CupertinoIcons.lock),
+                        suffixIcon: IconButton(
+                          onPressed: () => ref.read(obscureText1Provider.notifier).update((state) => !state),
+                          icon: Icon(
+                            ref.watch(obscureText1Provider) ?
+                            CupertinoIcons.eye_slash :
+                            CupertinoIcons.eye
+                          )
+                        ),
+                        validator: Controller.password1Validator,
                       ),
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 10),
-              // confirm password
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.only(left: 20.0),
-                    child: TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Confirm Password",
+                      CustomTextFormField(
+                        controller: _password2Controller,
+                        textInputAction: TextInputAction.done,
+                        hintText: 'Confirm password',
+                        obscureText: ref.watch(obscureText2Provider),
+                        prefixIcon: const Icon(CupertinoIcons.lock),
+                        suffixIcon: IconButton(
+                          onPressed: () => ref.read(obscureText2Provider.notifier).update((state) => !state),
+                          icon: Icon(
+                            ref.watch(obscureText2Provider) ?
+                            CupertinoIcons.eye_slash :
+                            CupertinoIcons.eye
+                          )
+                        ),
+                        validator: Controller.password2Validator,
                       ),
-                    ),
+                    ],
                   ),
                 ),
-              ),
-              // sign in button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: ElevatedButton(
+                const SizedBox(height: 20),
+
+                ElevatedButton(
                   onPressed: () {
                     Controller.onSignUp(
                       context,
-                      // emailController,
-                      // phoneNumberController,
-                      // password1Controller,
-                      this,
+                      _formKey,
+                      _emailController,
+                      _phoneNumberController,
+                      _password1Controller,
+                      _password2Controller,
                     );
                   },
                   style: ButtonStyle(
-                      minimumSize: const MaterialStatePropertyAll(
-                          Size(double.infinity, 32)),
-                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)))),
-                  child: const Text(
-                    'Sign In',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                    minimumSize: const MaterialStatePropertyAll(
+                      Size(double.infinity, 42)
                     ),
+                    shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)))
+                    ),
+                  child: const Text(
+                  'Sign In',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
                   ),
                 ),
-              ),
-              const SizedBox(height: 25),
-              // not a member? register now
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Already have an account?',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: widget.onTap,
-                    child: const Text(
-                      'Login Now',
+                ),
+                const SizedBox(height: 25),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    const Text(
+                      'Already have an account?',
                       style: TextStyle(
-                        color: Colors.blue,
                         fontWeight: FontWeight.bold,
+                        color: Colors.blueGrey
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ]),
+                    TextButton(
+                      onPressed: () => Controller.onLoginNow(context),
+                      child: const Text(
+                        'Login Now',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ]
+            ),
           ),
-        ),
+        )
       ),
     );
   }

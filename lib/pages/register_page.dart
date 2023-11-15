@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:portfolio/pages/controllers.dart';
 
 class RegisterPage extends StatefulWidget {
   final Function()? onTap;
@@ -11,32 +12,9 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final emailController = TextEditingController();
-  final usernameController = TextEditingController();
+  final phoneNumberController = TextEditingController();
   final password1Controller = TextEditingController();
   final password2Controller = TextEditingController();
-
-  void _signIn() {
-    final String email = emailController.text.trim();
-    final String password = password1Controller.text.trim();
-    final String username = usernameController.text.trim();
-   try {
-      final http.Response response = await http.post(
-        Uri.parse(url),
-        headers: headers,
-        body: jsonEncode(data),
-      );
-
-      if (response.statusCode == 201) {
-        final signupResponse =
-            SignupResponse.fromJson(jsonDecode(response.body));
-        return signupResponse;
-      } else {
-        return jsonDecode(response.body);
-      }
-    } catch (e) {
-      log(e.toString());
-      return {'status': 'failed', 'message': 'Connection error'};
-    }
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: TextField(
-                      controller: usernameController,
+                      controller: phoneNumberController,
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
                       decoration: const InputDecoration(
@@ -167,7 +145,15 @@ class _RegisterPageState extends State<RegisterPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: ElevatedButton(
-                  onPressed: _signIn,
+                  onPressed: () {
+                    Controller.onSignUp(
+                      context,
+                      // emailController,
+                      // phoneNumberController,
+                      // password1Controller,
+                      this,
+                    );
+                  },
                   style: ButtonStyle(
                       minimumSize: const MaterialStatePropertyAll(
                           Size(double.infinity, 32)),

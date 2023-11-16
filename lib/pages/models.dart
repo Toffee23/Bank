@@ -1,4 +1,3 @@
-
 class RegisterModel {
   final String email;
   final String phoneNumber;
@@ -11,10 +10,10 @@ class RegisterModel {
   });
 
   Map<String, String> toJson() => {
-    'email': email,
-    'phoneNumber': phoneNumber,
-    'password': password,
-  };
+        'email': email,
+        'phoneNumber': phoneNumber,
+        'password': password,
+      };
 }
 
 class LoginModel {
@@ -27,7 +26,7 @@ class LoginModel {
   });
 
   Map<String, String> toJson() => {
-    'username': username,
-    'password': password,
-  };
+        'username': username,
+        'password': password,
+      };
 }

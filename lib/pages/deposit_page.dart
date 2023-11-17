@@ -1,5 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:portfolio/pages/home_page.dart';
+import 'package:portfolio/utilities/text_field.dart';
+
+import 'controllers.dart';
 
 class DepositPage extends StatefulWidget {
   const DepositPage({super.key});
@@ -9,96 +14,87 @@ class DepositPage extends StatefulWidget {
 }
 
 class _DepositPageState extends State<DepositPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _phoneNumberController = TextEditingController();
+  final _amountController = TextEditingController();
+  final _phoneNumberFocusNode = FocusNode();
+  final _amountFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _phoneNumberController.dispose();
+    _amountController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Money'),
+        title: const Text('Add Money'),
       ),
-      backgroundColor: Colors.grey[300],
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              // email textfield
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.only(left: 20.0),
-                    child: TextField(
+      backgroundColor: Colors.grey.shade300,
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(25.0, 0, 25.0, 100.0),
+          child:
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: <CustomTextFormField>[
+                    CustomTextFormField(
+                      controller: _phoneNumberController,
+                      focusNode: _phoneNumberFocusNode,
+                      keyboardType: TextInputType.phone,
+                      hintText: 'Phone number',
+                      prefixText: '+ 234 ',
+                      inputFormatters: [CustomTextInputFormatter()],
+                      prefixIcon: const Icon(CupertinoIcons.phone),
+                      // validator: Controller.phoneNumberValidator,
+                    ),
+                    CustomTextFormField(
+                      controller: _amountController,
+                      focusNode: _amountFocusNode,
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Phone Number",
-                      ),
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      hintText: 'Amount',
+                      prefixIcon: const Icon(CupertinoIcons.money_dollar),
+                      // validator: Controller.emailValidator,
                     ),
-                  ),
+                  ],
                 ),
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 20.0),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.only(left: 20.0),
-                    child: TextField(
-                      keyboardType: TextInputType.number,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Amount",
-                      ),
-                    ),
+              ElevatedButton(
+                onPressed: () {
+                  Controller.onDeposit(
+                    context,
+                    _formKey,
+                    _phoneNumberController,
+                    _amountController,
+                  );
+                },
+                style: ButtonStyle(
+                  minimumSize: const MaterialStatePropertyAll(
+                    Size(double.infinity, 42)),
+                  shape: MaterialStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)))),
+                child: const Text(
+                  'Add money',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
                   ),
                 ),
               ),
-
-              const SizedBox(height: 20),
-
-              // sign in button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(
-                    child: GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomePage(),
-                        ),
-                      ),
-                      child: const Text(
-                        'Add Money',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ]),
+            ]
           ),
         ),
       ),

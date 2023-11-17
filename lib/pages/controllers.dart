@@ -42,7 +42,7 @@ class Controller {
 
   static void onSignUp(
     BuildContext context,
-    formKey,
+    GlobalKey<FormState> formKey,
     TextEditingController emailController,
     TextEditingController phoneNumberController,
     TextEditingController password1Controller,
@@ -93,7 +93,7 @@ class Controller {
 
   static void onSignIn(
     BuildContext context,
-    formKey,
+    GlobalKey<FormState> formKey,
     TextEditingController emailController,
     TextEditingController passwordController,
   ) {
@@ -201,4 +201,23 @@ class Controller {
       builder: (context) => const RegisterPage(),
     ),
   );
+
+  static void onDeposit(
+    BuildContext context,
+    GlobalKey<FormState> formKey,
+    TextEditingController phoneNumberController,
+    TextEditingController amountController,
+  ) {
+    final String phoneNumber = phoneNumberController.text.trim();
+    final String amount = amountController.text.trim();
+
+    if (formKey.currentState?.validate() ?? false) {
+      final DepositModel signInModel = DepositModel(
+        id: 'email', amount: amount
+      );
+      // _deposit(context, signInModel);
+    } else {
+      Vibration.vibrate(duration: 100);
+    }
+  }
 }

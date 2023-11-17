@@ -73,3 +73,18 @@ class UserModel {
   }
 
 }
+
+class DepositModel {
+  final String id;
+  final String amount;
+
+  DepositModel({
+    required this.id,
+    required this.amount,
+  });
+
+  Map<String, String> toJson() => {
+    'user_id': id,
+    'amount': amount,
+  };
+}

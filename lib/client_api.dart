@@ -23,18 +23,11 @@ class ClientApi {
     const String url = '$_baseUrl$_register';
 
     try {
-      log('Try start');
       final http.Response response = await http.post(
         Uri.parse(url),
         headers: headers,
         body: jsonEncode(model.toJson()),
       );
-
-      log(response.body);
-
-      for (var k in jsonDecode(response.body).keys) {
-        log('The key: $k');
-      }
 
       if (response.statusCode == 200) {
         return UserModel.fromJson(jsonDecode(response.body));
@@ -60,6 +53,32 @@ class ClientApi {
         headers: headers,
         body: jsonEncode(model.toJson()),
       );
+
+      if (response.statusCode == 200) {
+        return UserModel.fromJson(jsonDecode(response.body));
+      } else {
+        return jsonDecode(response.body);
+      }
+    } on SocketException catch (e) {
+      log('Failed due to Network issue $e');
+      return RequestStatus.networkFailure;
+    } catch (e) {
+      log('Failed mostly from the server $e');
+      return RequestStatus.unKnownError;
+    }
+  }
+
+  static Future<dynamic> deposit(DepositModel model) async {
+    const String url = "$_baseUrl$_deposit";
+
+    try {
+      final http.Response response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(model.toJson()),
+      );
+
+      log('Got response: ${response.body}');
 
       if (response.statusCode == 200) {
         return UserModel.fromJson(jsonDecode(response.body));

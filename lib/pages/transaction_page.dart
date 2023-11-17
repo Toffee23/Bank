@@ -91,35 +91,40 @@ class TransactionPage extends StatelessWidget {
               separatorBuilder: (_, __) => const Divider(height: 0),
               itemBuilder: (context, index) {
                 Transaction transaction = transactions[index];
-                return ListTile(
-                  leading: const CircleAvatar(
-                    child: Icon(Icons.monetization_on),
-                  ), //transaction
-                  title: Text(
-                    transaction.description,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blueGrey.shade700
-                  )
+                return DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: index % 2 == 0 ? Colors.grey.shade100 : Colors.grey.shade200,
                   ),
-                  subtitle: Text(
-                    transaction.date,
-                    style: const TextStyle(
-                      color: Colors.blueGrey
+                  child: ListTile(
+                    leading: const CircleAvatar(
+                      child: Icon(Icons.monetization_on),
+                    ), //transaction
+                    title: Text(
+                      transaction.description,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blueGrey.shade700
+                    )
                     ),
+                    subtitle: Text(
+                      transaction.date,
+                      style: const TextStyle(
+                        color: Colors.blueGrey
+                      ),
+                    ),
+                    trailing: Text(
+                      '${transaction.type == 'credit' ? '+' : '-'}${transaction.amount}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: transaction.type == 'credit' ?
+                          Colors.green : Colors.red
+                      ),
+                    ), // Transaction amount
+                    onTap: () {
+                      // Handle onTap event (if needed)
+                    },
                   ),
-                  trailing: Text(
-                    '${transaction.type == 'credit' ? '+' : '-'}${transaction.amount}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: transaction.type == 'credit' ?
-                        Colors.green : Colors.red
-                    ),
-                  ), // Transaction amount
-                  onTap: () {
-                    // Handle onTap event (if needed)
-                  },
                 );
               },
             ),

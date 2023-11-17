@@ -1,26 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/pages/controllers.dart';
 import 'package:portfolio/utilities/text_field.dart';
 
-final obscureText1Provider = StateProvider<bool>((ref) => true);
-final obscureText2Provider = StateProvider<bool>((ref) => true);
-
-class RegisterPage extends ConsumerStatefulWidget {
+class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<RegisterPage> createState() => _RegisterPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends ConsumerState<RegisterPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _phoneNumberController = TextEditingController();
   final _password1Controller = TextEditingController();
   final _password2Controller = TextEditingController();
+  final _emailFocusNode = FocusNode();
+  final _phoneNumberFocusNode = FocusNode();
+  final _password1FocusNode = FocusNode();
+  final _password2FocusNode = FocusNode();
+  final _obscureText1Listener = ValueNotifier<bool>(true);
+  final _obscureText2Listener = ValueNotifier<bool>(true);
 
   @override
   void dispose() {
@@ -66,9 +69,10 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     Form(
                       key: _formKey,
                       child: Column(
-                        children: <CustomTextFormField>[
+                        children: <Widget>[
                           CustomTextFormField(
                             controller: _emailController,
+                            focusNode: _emailFocusNode,
                             keyboardType: TextInputType.emailAddress,
                             hintText: 'Email',
                             prefixIcon: const Icon(CupertinoIcons.mail),
@@ -76,40 +80,52 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                           ),
                           CustomTextFormField(
                             controller: _phoneNumberController,
+                            focusNode: _phoneNumberFocusNode,
                             keyboardType: TextInputType.phone,
                             hintText: 'Phone number',
-                            prefixText: '+234 ',
+                            prefixText: '+ 234 ',
+                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                             prefixIcon: const Icon(CupertinoIcons.phone),
                             validator: Controller.phoneNumberValidator,
                           ),
-                          CustomTextFormField(
-                            controller: _password1Controller,
-                            obscureText: ref.watch(obscureText1Provider),
-                            hintText: 'Password',
-                            prefixIcon: const Icon(CupertinoIcons.lock),
-                            suffixIcon: IconButton(
-                                onPressed: () => ref
-                                    .read(obscureText1Provider.notifier)
-                                    .update((state) => !state),
-                                icon: Icon(ref.watch(obscureText1Provider)
-                                    ? CupertinoIcons.eye_slash
-                                    : CupertinoIcons.eye)),
-                            validator: Controller.password1Validator,
+                          ValueListenableBuilder<bool>(
+                            valueListenable: _obscureText1Listener,
+                            builder: (_, obscureText, __) {
+                              return CustomTextFormField(
+                                controller: _password1Controller,
+                                focusNode: _password1FocusNode,
+                                obscureText: obscureText,
+                                hintText: 'Password',
+                                prefixIcon: const Icon(Icons.lock_outline_rounded),
+                                suffixIcon: IconButton(
+                                  onPressed: () => _obscureText1Listener.value = !obscureText,
+                                  icon: Icon(obscureText ?
+                                    CupertinoIcons.eye_slash : CupertinoIcons.eye
+                                  )
+                                ),
+                                validator: Controller.password1Validator,
+                              );
+                            }
                           ),
-                          CustomTextFormField(
-                            controller: _password2Controller,
-                            textInputAction: TextInputAction.done,
-                            hintText: 'Confirm password',
-                            obscureText: ref.watch(obscureText2Provider),
-                            prefixIcon: const Icon(CupertinoIcons.lock),
-                            suffixIcon: IconButton(
-                                onPressed: () => ref
-                                    .read(obscureText2Provider.notifier)
-                                    .update((state) => !state),
-                                icon: Icon(ref.watch(obscureText2Provider)
-                                    ? CupertinoIcons.eye_slash
-                                    : CupertinoIcons.eye)),
-                            validator: Controller.password2Validator,
+                          ValueListenableBuilder<bool>(
+                            valueListenable: _obscureText2Listener,
+                            builder: (_, obscureText, __) {
+                              return CustomTextFormField(
+                                controller: _password2Controller,
+                                focusNode: _password2FocusNode,
+                                textInputAction: TextInputAction.done,
+                                hintText: 'Confirm password',
+                                obscureText: obscureText,
+                                prefixIcon: const Icon(Icons.lock_outline_rounded),
+                                suffixIcon: IconButton(
+                                  onPressed: () => _obscureText2Listener.value = !obscureText,
+                                  icon: Icon(obscureText ?
+                                    CupertinoIcons.eye_slash : CupertinoIcons.eye
+                                  )
+                                ),
+                                validator: Controller.password2Validator,
+                              );
+                            }
                           ),
                         ],
                       ),

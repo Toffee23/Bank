@@ -10,23 +10,23 @@ class RegisterModel {
   });
 
   Map<String, String> toJson() => {
-        'email': email,
-        'phoneNumber': phoneNumber,
-        'password': password,
-      };
+    'email': email,
+    'phoneNumber': phoneNumber,
+    'password': password,
+  };
 }
 
 class LoginModel {
-  final String username;
+  final String email;
   final String password;
 
   LoginModel({
-    required this.username,
+    required this.email,
     required this.password,
   });
 
   Map<String, String> toJson() => {
-        'username': username,
-        'password': password,
-      };
+    'email': email,
+    'password': password,
+  };
 }

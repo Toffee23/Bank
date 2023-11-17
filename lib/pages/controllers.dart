@@ -1,10 +1,58 @@
+import 'dart:developer';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:portfolio/client_api.dart';
 import 'package:portfolio/pages/models.dart';
+import 'package:portfolio/pages/register_page.dart';
 import 'package:portfolio/utils.dart';
 import 'package:vibration/vibration.dart';
 
+class LoadingDialog extends StatelessWidget {
+  const LoadingDialog({
+    Key? key,
+    required this.message,
+  }) : super(key: key);
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          const CupertinoActivityIndicator(
+            radius: 16.0,
+          ),
+          const SizedBox(height: 15.0),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.blueGrey.shade600,
+              letterSpacing: .6
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class Controller {
+
+  static void _startSpinner(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => WillPopScope(
+        onWillPop: () async => false,
+        child: LoadingDialog(message: message)
+      )
+    );
+  }
+
+  static void _stopSpinner(BuildContext context) => Navigator.of(context).pop();
+
   static void onSignUp(
     BuildContext context,
     formKey,
@@ -20,7 +68,7 @@ class Controller {
 
     if (formKey.currentState?.validate() ?? false) {
       final RegisterModel signupModel = RegisterModel(
-          email: email, phoneNumber: phoneNumber, password: password1);
+        email: email, phoneNumber: phoneNumber, password: password1);
       _signUp(context, signupModel);
     } else {
       Vibration.vibrate(duration: 100);
@@ -28,24 +76,28 @@ class Controller {
   }
 
   static Future<void> _signUp(
-      BuildContext context, RegisterModel signupModel) async {
-    final response = await ClientApi.register(signupModel);
-
-    // print(response);
+    BuildContext context,
+    RegisterModel signupModel
+  ) async {
+    _startSpinner(context, 'Please wait while we\'re signing you up.');
+    ClientApi.register(signupModel)
+      .whenComplete(() => _stopSpinner(context))
+        .then((response) => log(response.toString()));
   }
 
   static void onSignIn(
     BuildContext context,
     formKey,
-    TextEditingController usernameController,
+    TextEditingController emailController,
     TextEditingController passwordController,
   ) {
-    final String username = usernameController.text.trim();
+    final String email = emailController.text.trim();
     final String password = passwordController.text.trim();
 
     if (formKey.currentState?.validate() ?? false) {
-      final LoginModel signInModel =
-          LoginModel(username: username, password: password);
+      final LoginModel signInModel = LoginModel(
+        email: email, password: password
+      );
       _signIn(context, signInModel);
     } else {
       Vibration.vibrate(duration: 100);
@@ -54,9 +106,10 @@ class Controller {
 
   static Future<void> _signIn(
       BuildContext context, LoginModel signInModel) async {
-    final response = await ClientApi.login(signInModel);
-
-    // print(response);
+    _startSpinner(context, 'Please wait while we check you in.');
+    ClientApi.login(signInModel)
+      .whenComplete(() => _stopSpinner(context))
+        .then((response) => log(response.toString()));
   }
 
   static String? emailValidator(String? value) {
@@ -97,4 +150,11 @@ class Controller {
   }
 
   static void onLoginNow(BuildContext context) => Navigator.pop(context);
+
+  static void onRegisterNow(BuildContext context) => Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => const RegisterPage(),
+    ),
+  );
 }

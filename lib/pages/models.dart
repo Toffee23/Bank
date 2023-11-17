@@ -62,13 +62,13 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'],
+      id: json['_id'],
+      phoneNumber: json['phone'].toString(),
       email: json['email'],
-      phoneNumber: json['phone'],
-      balance: json['balance'],
-      createAt: DateTime.parse(json['createAt']),
+      balance: json['balance'].toString(),
+      createAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
-      v: json['v'],
+      v: json['__v'].toString(),
     );
   }
 

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:portfolio/pages/models.dart';
 
@@ -21,21 +23,31 @@ class ClientApi {
     const String url = '$_baseUrl$_register';
 
     try {
+      log('Try start');
       final http.Response response = await http.post(
         Uri.parse(url),
         headers: headers,
         body: jsonEncode(model.toJson()),
       );
 
+      log(response.body);
+
+      for (var k in jsonDecode(response.body).keys) {
+        log('The key: $k');
+      }
+
       if (response.statusCode == 200) {
         return UserModel.fromJson(jsonDecode(response.body));
       } else {
         log('Failed from server');
-        return jsonDecode(response.body);
+        return jsonDecode(response.body)['message'];
       }
+    } on SocketException catch (e) {
+      log('Failed due to Network issue $e');
+      return RequestStatus.networkFailure;
     } catch (e) {
-      log('Failed due to Network issue');
-      return {'status': 'failed', 'message': 'Network interruption'};
+      log('Failed mostly from the server $e');
+      return RequestStatus.unKnownError;
     }
   }
 
@@ -54,9 +66,19 @@ class ClientApi {
       } else {
         return jsonDecode(response.body);
       }
+    } on SocketException catch (e) {
+      log('Failed due to Network issue $e');
+      return RequestStatus.networkFailure;
     } catch (e) {
-      log('Failed due to Network issue');
-      return 'Network interruption';
+      log('Failed mostly from the server $e');
+      return RequestStatus.unKnownError;
     }
   }
+}
+
+enum RequestStatus {
+  networkFailure,
+  serverError,
+  unKnownError,
+  success
 }

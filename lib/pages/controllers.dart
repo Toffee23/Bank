@@ -30,6 +30,12 @@ class Controller {
       builder: (BuildContext context) => AlertDialog(
         title: const Text('Alert'),
         content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Dismiss'),
+          )
+        ],
       )
     );
   }
@@ -68,11 +74,18 @@ class Controller {
           gotoHome(context, response);
           break;
         default:
-          switch(response['message']) {
-            case 'Network interruption':
-              return log('network problem');
+          switch(response) {
+            case 'duplicate datas in the databse':
+              return _showAlertDialog(context, 'Email or username already in use.');
+
+            case RequestStatus.networkFailure:
+              return _showAlertDialog(context, 'We couldn\'t sign you in due to network interruption.\n\nPlease check your network and try again.');
+
+            case RequestStatus.unKnownError:
+              return _showAlertDialog(context, 'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
+
             default:
-              return log('Email or phone number already in use');
+              return _showAlertDialog(context, 'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
           }
       }
     });
@@ -108,16 +121,18 @@ class Controller {
               gotoHome(context, response);
               break;
             default:
-              log(response);
               switch(response) {
                 case 'wrong credentilas':
-                  log('network problem');
                   return _showAlertDialog(context, 'Incorrect email or password. Please cross check your credentials and try again.');
 
-                case 'Network interruption':
-                  log('network problem');
-                  return _showAlertDialog(context, 'We couldn\'t sign you in due to network interruption. Please check your network and try again.');
+                case RequestStatus.networkFailure:
+                  return _showAlertDialog(context, 'We couldn\'t sign you in due to network interruption.\n\nPlease check your network and try again.');
+
+                case RequestStatus.unKnownError:
+                  return _showAlertDialog(context, 'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
+
                 default:
+                  return _showAlertDialog(context, 'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
               }
           }
     });

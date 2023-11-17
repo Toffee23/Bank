@@ -2,41 +2,12 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portfolio/client_api.dart';
+import 'package:portfolio/pages/home_page.dart';
 import 'package:portfolio/pages/models.dart';
 import 'package:portfolio/pages/register_page.dart';
+import 'package:portfolio/utilities/dialogs.dart';
 import 'package:portfolio/utils.dart';
 import 'package:vibration/vibration.dart';
-
-class LoadingDialog extends StatelessWidget {
-  const LoadingDialog({
-    Key? key,
-    required this.message,
-  }) : super(key: key);
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          const CupertinoActivityIndicator(
-            radius: 16.0,
-          ),
-          const SizedBox(height: 15.0),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.blueGrey.shade600,
-              letterSpacing: .6
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class Controller {
 
@@ -53,22 +24,30 @@ class Controller {
 
   static void _stopSpinner(BuildContext context) => Navigator.of(context).pop();
 
+  static void _showAlertDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Alert'),
+        content: Text(message),
+      )
+    );
+  }
+
   static void onSignUp(
     BuildContext context,
     formKey,
     TextEditingController emailController,
     TextEditingController phoneNumberController,
     TextEditingController password1Controller,
-    TextEditingController password2Controller,
   ) {
     final String email = emailController.text.trim();
     final String phoneNumber = phoneNumberController.text.trim();
-    final String password1 = password1Controller.text.trim();
-    final String password2 = password2Controller.text.trim();
+    final String password = password1Controller.text.trim();
 
     if (formKey.currentState?.validate() ?? false) {
       final RegisterModel signupModel = RegisterModel(
-        email: email, phoneNumber: phoneNumber, password: password1);
+        email: email, phone: phoneNumber, password: password);
       _signUp(context, signupModel);
     } else {
       Vibration.vibrate(duration: 100);
@@ -82,7 +61,21 @@ class Controller {
     _startSpinner(context, 'Please wait while we\'re signing you up.');
     ClientApi.register(signupModel)
       .whenComplete(() => _stopSpinner(context))
-        .then((response) => log(response.toString()));
+        .then((response) {
+
+      switch(response.runtimeType) {
+        case UserModel:
+          gotoHome(context, response);
+          break;
+        default:
+          switch(response['message']) {
+            case 'Network interruption':
+              return log('network problem');
+            default:
+              return log('Email or phone number already in use');
+          }
+      }
+    });
   }
 
   static void onSignIn(
@@ -109,12 +102,39 @@ class Controller {
     _startSpinner(context, 'Please wait while we check you in.');
     ClientApi.login(signInModel)
       .whenComplete(() => _stopSpinner(context))
-        .then((response) => log(response.toString()));
+        .then((response) {
+          switch(response.runtimeType) {
+            case UserModel:
+              gotoHome(context, response);
+              break;
+            default:
+              log(response);
+              switch(response) {
+                case 'wrong credentilas':
+                  log('network problem');
+                  return _showAlertDialog(context, 'Incorrect email or password. Please cross check your credentials and try again.');
+
+                case 'Network interruption':
+                  log('network problem');
+                  return _showAlertDialog(context, 'We couldn\'t sign you in due to network interruption. Please check your network and try again.');
+                default:
+              }
+          }
+    });
+  }
+
+  static gotoHome(BuildContext context, UserModel user) {
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (context) => const HomePage(),
+      ),
+      (route) => false
+    );
   }
 
   static String? emailValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter an email';
+      return 'Please enter your email';
     }
     if (value.isNotEmail) {
       return 'Please enter a valid email';
@@ -127,7 +147,7 @@ class Controller {
       return 'Please enter a phone number';
     }
     if (value.length != 10) {
-      return 'Phone number can not be more than or less than 10';
+      return 'Phone number should be 11 in length';
     }
     return null;
   }
@@ -136,15 +156,24 @@ class Controller {
     if (value == null || value.isEmpty) {
       return 'Please enter a password';
     }
-    if (value.length < 6) {
-      return 'Password length must be more than 6';
-    }
+    String msg = 'Password must contain ;';
+
+    if (value.length < 6) msg += '\nat least 7 characters';
+    if (!value.hasDigit) msg += '\nat least one digit';
+    if (!value.hasLowercase) msg += '\nat least one lowercase';
+    if (!value.hasUppercase) msg += '\nat least one uppercase';
+    if (!value.hasSpecialCharacters) msg += '\nat least one special character';
+    if (msg.contains('\n')) return msg;
+
     return null;
   }
 
-  static String? password2Validator(String? value) {
-    if (value == null || value.isEmpty) {
+  static String? password2Validator(String? value1, String value2) {
+    if (value1 == null || value1.isEmpty) {
       return 'Please enter a password';
+    }
+    if (value1 != value2) {
+      return 'Password mismatch';
     }
     return null;
   }

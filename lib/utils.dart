@@ -6,4 +6,12 @@ extension StringUtils on String {
   }
 
   bool get isNotEmail => !isEmail;
+
+  bool get hasDigit => RegExp(r'[0-9]').hasMatch(this);
+
+  bool get hasUppercase => RegExp(r'[A-Z]').hasMatch(this);
+
+  bool get hasLowercase => RegExp(r'[a-z]').hasMatch(this);
+
+  bool get hasSpecialCharacters => RegExp(r'[!@#%^&*(),.?":{}|<>]').hasMatch(this);
 }

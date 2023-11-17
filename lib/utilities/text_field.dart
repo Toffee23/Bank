@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class TextNotifier extends ValueNotifier<bool> {
-  TextNotifier() : super(false);
-}
-
-class FocusNotifier extends ValueNotifier<bool> {
-  FocusNotifier() : super(false);
-}
-
 class CustomTextFormField extends StatelessWidget {
   CustomTextFormField({
     Key? key,
@@ -143,5 +135,21 @@ class CustomTextFormField extends StatelessWidget {
         }
       ),
     );
+  }
+}
+
+class CustomTextInputFormatter extends TextInputFormatter {
+
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    if (
+      newValue.text.isEmpty ||
+      RegExp(r'\d').hasMatch(newValue.text) &&
+      newValue.text.length < 11
+    ) {
+      return TextEditingValue(text: newValue.text);
+    }
+
+    return TextEditingValue(text: oldValue.text);
   }
 }

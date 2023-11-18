@@ -78,7 +78,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             prefixIcon: const Icon(CupertinoIcons.mail),
                             validator: Controller.emailValidator,
                           ),
-                          ValueListenableBuilder<bool>(
+                          ValueListenableBuilder(
                               valueListenable: _obscureTextListener,
                               builder: (context, obscureText, child) {
                                 return CustomTextFormField(
@@ -88,7 +88,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                   hintText: 'Password',
                                   prefixIcon:
                                       const Icon(Icons.lock_outline_rounded),
-                                  validator: Controller.password1Validator,
+                                  // validator: Controller.password1Validator,
                                   suffixIcon: IconButton(
                                       onPressed: () => _obscureTextListener
                                           .value = !obscureText,

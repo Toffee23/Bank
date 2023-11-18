@@ -34,7 +34,7 @@ class LoginModel {
 class UserModel {
   final String id;
   final String email;
-  final String phoneNumber;
+  final int phoneNumber;
   final String balance;
   final DateTime createAt;
   final DateTime updatedAt;
@@ -63,7 +63,7 @@ class UserModel {
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['_id'],
-      phoneNumber: json['phone'].toString(),
+      phoneNumber: json['phone'],
       email: json['email'],
       balance: json['balance'].toString(),
       createAt: DateTime.parse(json['createdAt']),
@@ -74,49 +74,49 @@ class UserModel {
 }
 
 class DepositModel {
-  final String id;
-  final String amount;
+  final int phone;
+  final int amount;
 
   DepositModel({
-    required this.id,
+    required this.phone,
     required this.amount,
   });
 
-  Map<String, String> toJson() => {
-        'user_id': id,
+  Map<String, dynamic> toJson() => {
+        'phone': phone,
         'amount': amount,
       };
 }
 
 class SendModel {
-  final String id;
-  final String recipientId;
-  final String amount;
+  final String email;
+  final int recieverPhoneNo;
+  final int amount;
 
   SendModel({
-    required this.id,
-    required this.recipientId,
+    required this.email,
+    required this.recieverPhoneNo,
     required this.amount,
   });
 
-  Map<String, String> toJson() => {
-    'user_id': id,
-    'reciever_id': recipientId,
-    'amount': amount,
-  };
+  Map<String, dynamic> toJson() => {
+        'sender_email': email,
+        'reciever_phoneno': recieverPhoneNo,
+        'amount': amount,
+      };
 }
 
 class WithdrawModel {
-  final String id;
-  final String amount;
+  final int phone;
+  final int amount;
 
   WithdrawModel({
-    required this.id,
+    required this.phone,
     required this.amount,
   });
 
-  Map<String, String> toJson() => {
-    'user_id': id,
-    'amount': amount,
-  };
+  Map<String, dynamic> toJson() => {
+        'phone': phone,
+        'amount': amount,
+      };
 }

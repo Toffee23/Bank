@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:portfolio/utilities/my_button.dart';
 import 'package:portfolio/utilities/text_field.dart';
+
 import 'controllers.dart';
 
 class DepositPage extends ConsumerStatefulWidget {
@@ -72,18 +73,17 @@ class _DepositPageState extends ConsumerState<DepositPage> {
                   ),
                   const SizedBox(height: 20.0),
                   CustomElevatedButton(
-                    onPressed: () {
-                      Controller.onDeposit(
-                        context,
-                        ref,
-                        _formKey,
-                        _phoneNumberController,
-                        _amountController,
-                      );
-                    },
-                    text: 'Add money',
-                    icon: const Icon(CupertinoIcons.arrow_down_right_square)
-                  )
+                      onPressed: () {
+                        Controller.onDeposit(
+                          context,
+                          ref,
+                          _formKey,
+                          _phoneNumberController,
+                          _amountController,
+                        );
+                      },
+                      text: 'Add money',
+                      icon: const Icon(CupertinoIcons.arrow_down_right_square))
                 ]),
           ),
         ),

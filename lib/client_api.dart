@@ -56,6 +56,7 @@ class ClientApi {
       );
 
       if (response.statusCode == 200) {
+        print(response.body);
         return UserModel.fromJson(jsonDecode(response.body));
       } else {
         return jsonDecode(response.body);
@@ -83,6 +84,7 @@ class ClientApi {
       log('Got response: ${response.body}');
 
       if (response.statusCode == 200) {
+        print(response.body);
         return UserModel.fromJson(jsonDecode(response.body));
       } else {
         return jsonDecode(response.body);

@@ -84,19 +84,18 @@ class _WithDrawPageState extends ConsumerState<WithDrawPage> {
                   ),
                   const SizedBox(height: 20.0),
                   CustomElevatedButton(
-                    onPressed: () {
-                      Controller.onWithdraw(
-                        context,
-                        ref,
-                        _formKey,
-                        _emailController,
-                        _phoneNumberController,
-                        // _amountController,
-                      );
-                    },
-                    text: 'Withdraw money',
-                    icon: const Icon(CupertinoIcons.arrow_up_right_square)
-                  ),
+                      onPressed: () {
+                        Controller.onWithdraw(
+                          context,
+                          ref,
+                          _formKey,
+                          _emailController,
+                          _phoneNumberController,
+                          // _amountController,
+                        );
+                      },
+                      text: 'Withdraw money',
+                      icon: const Icon(CupertinoIcons.arrow_up_right_square)),
                 ]),
           ),
         ),

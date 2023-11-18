@@ -216,14 +216,14 @@ class Controller {
     TextEditingController phoneNumberController,
     TextEditingController amountController,
   ) {
-    final String phoneNumber = phoneNumberController.text.trim();
-    final String amount = amountController.text.trim();
+    final int phoneNumber = int.parse(phoneNumberController.text.trim());
+    final int amount = int.parse(amountController.text.trim());
 
     final user = ref.watch(userProvider)!;
     log(user.id);
     // return;
     if (formKey.currentState?.validate() ?? false) {
-      final DepositModel model = DepositModel(id: user.id, amount: amount);
+      final DepositModel model = DepositModel(phone: user.phoneNumber, amount: amount);
 
       _deposit(context, ref, model);
     } else {
@@ -237,7 +237,7 @@ class Controller {
     ClientApi.deposit(model)
         .whenComplete(() => _stopSpinner(context))
         .then((response) {
-          return;
+      return;
       switch (response.runtimeType) {
         case UserModel:
           gotoHome(context, ref, response);
@@ -271,14 +271,14 @@ class Controller {
     TextEditingController phoneNumberController,
     TextEditingController amountController,
   ) {
-    final String phoneNumber = phoneNumberController.text.trim();
-    final String amount = amountController.text.trim();
+    final int phoneNumber = int.parse(phoneNumberController.text.trim());
+    final int amount = int.parse(amountController.text.trim());
 
     final user = ref.watch(userProvider)!;
     log(user.id);
     // return;
     if (formKey.currentState?.validate() ?? false) {
-      final DepositModel model = DepositModel(id: user.id, amount: amount);
+      final DepositModel model = DepositModel(phone: user.phoneNumber, amount: amount);
 
       _withdraw(context, ref, model);
     } else {
@@ -292,7 +292,7 @@ class Controller {
     ClientApi.deposit(model)
         .whenComplete(() => _stopSpinner(context))
         .then((response) {
-          return;
+      return;
       switch (response.runtimeType) {
         case UserModel:
           gotoHome(context, ref, response);

@@ -53,3 +53,45 @@ class MyButton extends StatelessWidget {
     );
   }
 }
+
+class CustomElevatedButton extends StatelessWidget {
+  const CustomElevatedButton({
+    Key? key,
+    this.onPressed,
+    required this.text,
+    this.icon,
+  }) : super(key: key);
+  final VoidCallback? onPressed;
+  final String text;
+  final Icon? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return
+      ElevatedButton(
+        onPressed: onPressed,
+        style: ButtonStyle(
+          textStyle: const MaterialStatePropertyAll(
+            TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            )
+          ),
+          minimumSize: const MaterialStatePropertyAll(
+            Size(double.infinity, 42)),
+          shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0)))),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(text),
+            if (icon != null) const SizedBox(width: 10),
+            if (icon != null) icon!,
+          ],
+        ),
+      );
+  }
+}
+

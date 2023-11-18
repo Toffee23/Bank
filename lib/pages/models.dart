@@ -88,6 +88,24 @@ class DepositModel {
       };
 }
 
+class SendModel {
+  final String id;
+  final String recipientId;
+  final String amount;
+
+  SendModel({
+    required this.id,
+    required this.recipientId,
+    required this.amount,
+  });
+
+  Map<String, String> toJson() => {
+    'user_id': id,
+    'reciever_id': recipientId,
+    'amount': amount,
+  };
+}
+
 class WithdrawModel {
   final String id;
   final String amount;
@@ -98,7 +116,7 @@ class WithdrawModel {
   });
 
   Map<String, String> toJson() => {
-        'user_id': id,
-        'amount': amount,
-      };
+    'user_id': id,
+    'amount': amount,
+  };
 }

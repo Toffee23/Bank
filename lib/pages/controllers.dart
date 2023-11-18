@@ -264,6 +264,61 @@ class Controller {
     });
   }
 
+  static void onWithdraw(
+    BuildContext context,
+    WidgetRef ref,
+    GlobalKey<FormState> formKey,
+    TextEditingController phoneNumberController,
+    TextEditingController amountController,
+  ) {
+    final String phoneNumber = phoneNumberController.text.trim();
+    final String amount = amountController.text.trim();
+
+    final user = ref.watch(userProvider)!;
+    log(user.id);
+    // return;
+    if (formKey.currentState?.validate() ?? false) {
+      final DepositModel model = DepositModel(id: user.id, amount: amount);
+
+      _withdraw(context, ref, model);
+    } else {
+      Vibration.vibrate(duration: 100);
+    }
+  }
+
+  static Future<void> _withdraw(
+      BuildContext context, WidgetRef ref, DepositModel model) async {
+    _startSpinner(context, 'Please wait while we check you in.');
+    ClientApi.deposit(model)
+        .whenComplete(() => _stopSpinner(context))
+        .then((response) {
+          return;
+      switch (response.runtimeType) {
+        case UserModel:
+          gotoHome(context, ref, response);
+          break;
+        default:
+          switch (response) {
+            case 'wrong credentilas':
+              return _showAlertDialog(context,
+                  'Incorrect email or password. Please cross check your credentials and try again.');
+
+            case RequestStatus.networkFailure:
+              return _showAlertDialog(context,
+                  'We couldn\'t sign you in due to network interruption.\n\nPlease check your network and try again.');
+
+            case RequestStatus.unKnownError:
+              return _showAlertDialog(context,
+                  'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
+
+            default:
+              return _showAlertDialog(context,
+                  'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
+          }
+      }
+    });
+  }
+
   static void onSend(
     BuildContext context,
     GlobalKey<FormState> formKey,
@@ -275,8 +330,8 @@ class Controller {
     final String amount = amountController.text.trim();
 
     if (formKey.currentState?.validate() ?? false) {
-      final DepositModel signInModel =
-          DepositModel(id: 'email', amount: amount);
+      final SendModel signInModel =
+          SendModel(id: 'email', amount: amount, recipientId: '');
       // _deposit(context, signInModel);
     } else {
       Vibration.vibrate(duration: 100);

@@ -7,6 +7,8 @@ import 'package:portfolio/pages/controllers.dart';
 
 import '../utilities/text_field.dart';
 
+final isValidated = StateProvider<bool>((ref) => false);
+
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -72,6 +74,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             focusNode: _emailFocusNode,
                             keyboardType: TextInputType.emailAddress,
                             hintText: 'Email',
+                            validateOnTextChange: ref.watch(isValidated),
                             prefixIcon: const Icon(CupertinoIcons.mail),
                             validator: Controller.emailValidator,
                           ),

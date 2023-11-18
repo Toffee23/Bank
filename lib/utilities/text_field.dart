@@ -14,6 +14,7 @@ class CustomTextFormField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.validator,
+    this.validateOnTextChange = false,
     this.inputFormatters,
   }) : super(key: key);
   final TextEditingController? controller;
@@ -21,6 +22,7 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final bool obscureText;
+  final bool validateOnTextChange;
   final String hintText;
   final String? prefixText;
   final Widget? prefixIcon;
@@ -30,6 +32,7 @@ class CustomTextFormField extends StatelessWidget {
 
   final textListener = ValueNotifier<bool>(false);
   final focusListener = ValueNotifier<bool>(false);
+  final errorTextListener = ValueNotifier<String?>(null);
 
   @override
   Widget build(BuildContext context) {
@@ -46,78 +49,91 @@ class CustomTextFormField extends StatelessWidget {
                 ValueListenableBuilder<bool>(
                     valueListenable: focusListener,
                     builder: (context, isFocused, child) {
-                      return Focus(
-                        onFocusChange: (value) {
-                          focusListener.value = value;
-                          value
-                              ? focusNode?.requestFocus()
-                              : focusNode?.unfocus();
-                        },
-                        child: TextFormField(
-                          controller: controller,
-                          focusNode: focusNode,
-                          keyboardType: keyboardType,
-                          textInputAction: textInputAction,
-                          inputFormatters: inputFormatters,
-                          validator: validator,
-                          obscureText: obscureText,
-                          onChanged: (value) =>
-                              textListener.value = value.isNotEmpty,
-                          decoration: InputDecoration(
-                              fillColor: Colors.grey.shade200,
-                              filled: true,
-                              hintText: hintText,
-                              prefixText:
-                                  isFocused || hasText ? prefixText : null,
-                              prefixIcon: prefixIcon == null
-                                  ? null
-                                  : Padding(
-                                      padding: const EdgeInsets.only(left: 4.0),
-                                      child: prefixIcon,
+                      return ValueListenableBuilder<String?>(
+                        valueListenable: errorTextListener,
+                        builder: (context, errorText, child) {
+                          return Focus(
+                            onFocusChange: (value) {
+                              focusListener.value = value;
+                              value
+                                  ? focusNode?.requestFocus()
+                                  : focusNode?.unfocus();
+                            },
+                            child: TextFormField(
+                              controller: controller,
+                              focusNode: focusNode,
+                              keyboardType: keyboardType,
+                              textInputAction: textInputAction,
+                              inputFormatters: inputFormatters,
+                              validator: validator,
+                              obscureText: obscureText,
+                              onChanged: (value) {
+                                textListener.value = value.isNotEmpty;
+                                // errorTextListener.value = validateOnTextChange ?
+                                //   validator?.call(controller?.text) : null;
+                                // print(validateOnTextChange);
+                                // print(validator?.call(controller?.text));
+                                // print(errorTextListener.value);
+                                // print('');
+                              },
+                              decoration: InputDecoration(
+                                  fillColor: Colors.grey.shade200,
+                                  filled: true,
+                                  hintText: hintText,
+                                  errorText: errorText,
+                                  prefixText:
+                                      isFocused || hasText ? prefixText : null,
+                                  prefixIcon: prefixIcon == null
+                                      ? null
+                                      : Padding(
+                                          padding: const EdgeInsets.only(left: 4.0),
+                                          child: prefixIcon,
+                                        ),
+                                  suffixIcon: suffixIcon == null
+                                      ? null
+                                      : Card(
+                                          margin: const EdgeInsets.only(right: 4.0),
+                                          color: Colors.transparent,
+                                          elevation: 0.0,
+                                          shape: const CircleBorder(),
+                                          clipBehavior: Clip.hardEdge,
+                                          child: suffixIcon,
+                                        ),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.grey.shade400, width: 1.5),
+                                      borderRadius: BorderRadius.circular(20.0)),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    borderSide: const BorderSide(
+                                      color: Colors.blue,
+                                      width: 2.0,
                                     ),
-                              suffixIcon: suffixIcon == null
-                                  ? null
-                                  : Card(
-                                      margin: const EdgeInsets.only(right: 4.0),
-                                      color: Colors.transparent,
-                                      elevation: 0.0,
-                                      shape: const CircleBorder(),
-                                      clipBehavior: Clip.hardEdge,
-                                      child: suffixIcon,
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    borderSide: const BorderSide(
+                                      color: Colors.red,
+                                      width: 2.0,
                                     ),
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.grey.shade400, width: 1.5),
-                                  borderRadius: BorderRadius.circular(20.0)),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                borderSide: const BorderSide(
-                                  color: Colors.blue,
-                                  width: 2.0,
-                                ),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                borderSide: const BorderSide(
-                                  color: Colors.red,
-                                  width: 2.0,
-                                ),
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                borderSide: const BorderSide(
-                                  color: Colors.blue,
-                                  width: 2.0,
-                                ),
-                              ),
-                              isCollapsed: true,
-                              contentPadding: EdgeInsets.fromLTRB(
-                                18.0,
-                                textListener.value ? 28.0 : 20.0,
-                                18.0,
-                                textListener.value ? 14.0 : 20.0,
-                              )),
-                        ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    borderSide: const BorderSide(
+                                      color: Colors.blue,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                  isCollapsed: true,
+                                  contentPadding: EdgeInsets.fromLTRB(
+                                    18.0,
+                                    textListener.value ? 28.0 : 20.0,
+                                    18.0,
+                                    textListener.value ? 14.0 : 20.0,
+                                  )),
+                            ),
+                          );
+                        }
                       );
                     }),
                 if (hasText)

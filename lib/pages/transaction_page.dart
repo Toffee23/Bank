@@ -23,9 +23,7 @@ class TransactionPage extends StatelessWidget {
             margin: const EdgeInsets.all(15),
             padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
-              color: Colors.cyan,
-              borderRadius: BorderRadius.circular(8.0)
-            ),
+                color: Colors.cyan, borderRadius: BorderRadius.circular(8.0)),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -41,11 +39,10 @@ class TransactionPage extends StatelessWidget {
                 Text(
                   '\$1,099.54',
                   style: TextStyle(
-                    fontSize: 30,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.3
-                  ),
+                      fontSize: 30,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.3),
                 ),
               ],
             ),
@@ -57,10 +54,7 @@ class TransactionPage extends StatelessWidget {
               children: <Widget>[
                 const Text(
                   'History',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 TextButton(
                   onPressed: () {},
@@ -70,9 +64,7 @@ class TransactionPage extends StatelessWidget {
                       Text(
                         'Sort Most Recent',
                         style: TextStyle(
-                          color: Colors.grey.shade500,
-                          fontSize: 13
-                        ),
+                            color: Colors.grey.shade500, fontSize: 13),
                       ),
                       Icon(
                         Icons.arrow_drop_down,
@@ -93,33 +85,30 @@ class TransactionPage extends StatelessWidget {
                 Transaction transaction = transactions[index];
                 return DecoratedBox(
                   decoration: BoxDecoration(
-                    color: index % 2 == 0 ? Colors.grey.shade100 : Colors.grey.shade200,
+                    color: index % 2 == 0
+                        ? Colors.grey.shade100
+                        : Colors.grey.shade200,
                   ),
                   child: ListTile(
                     leading: const CircleAvatar(
                       child: Icon(Icons.monetization_on),
                     ), //transaction
-                    title: Text(
-                      transaction.description,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blueGrey.shade700
-                    )
-                    ),
+                    title: Text(transaction.description,
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueGrey.shade700)),
                     subtitle: Text(
                       transaction.date,
-                      style: const TextStyle(
-                        color: Colors.blueGrey
-                      ),
+                      style: const TextStyle(color: Colors.blueGrey),
                     ),
                     trailing: Text(
                       '${transaction.type == 'credit' ? '+' : '-'}${transaction.amount}',
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: transaction.type == 'credit' ?
-                          Colors.green : Colors.red
-                      ),
+                          fontWeight: FontWeight.bold,
+                          color: transaction.type == 'credit'
+                              ? Colors.green
+                              : Colors.red),
                     ), // Transaction amount
                     onTap: () {
                       // Handle onTap event (if needed)

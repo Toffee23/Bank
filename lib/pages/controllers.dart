@@ -1,47 +1,44 @@
-import 'dart:developer';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:portfolio/client_api.dart';
 import 'package:portfolio/pages/home_page.dart';
 import 'package:portfolio/pages/models.dart';
 import 'package:portfolio/pages/register_page.dart';
+import 'package:portfolio/providers.dart';
 import 'package:portfolio/utilities/dialogs.dart';
 import 'package:portfolio/utils.dart';
 import 'package:vibration/vibration.dart';
 
 class Controller {
-
   static void _startSpinner(BuildContext context, String message) {
     showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) => WillPopScope(
-        onWillPop: () async => false,
-        child: LoadingDialog(message: message)
-      )
-    );
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => WillPopScope(
+            onWillPop: () async => false,
+            child: LoadingDialog(message: message)));
   }
 
   static void _stopSpinner(BuildContext context) => Navigator.of(context).pop();
 
   static void _showAlertDialog(BuildContext context, String message) {
     showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('Alert'),
-        content: Text(message),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Dismiss'),
-          )
-        ],
-      )
-    );
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text('Alert'),
+              content: Text(message),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Dismiss'),
+                )
+              ],
+            ));
   }
 
   static void onSignUp(
     BuildContext context,
+    WidgetRef ref,
     GlobalKey<FormState> formKey,
     TextEditingController emailController,
     TextEditingController phoneNumberController,
@@ -52,40 +49,41 @@ class Controller {
     final String password = password1Controller.text.trim();
 
     if (formKey.currentState?.validate() ?? false) {
-      final RegisterModel signupModel = RegisterModel(
-        email: email, phone: phoneNumber, password: password);
-      _signUp(context, signupModel);
+      final RegisterModel signupModel =
+          RegisterModel(email: email, phone: phoneNumber, password: password);
+      _signUp(context, ref, signupModel);
     } else {
       Vibration.vibrate(duration: 100);
     }
   }
 
   static Future<void> _signUp(
-    BuildContext context,
-    RegisterModel signupModel
-  ) async {
+      BuildContext context, WidgetRef ref, signupModel) async {
     _startSpinner(context, 'Please wait while we\'re signing you up.');
     ClientApi.register(signupModel)
-      .whenComplete(() => _stopSpinner(context))
+        .whenComplete(() => _stopSpinner(context))
         .then((response) {
-
-      switch(response.runtimeType) {
+      switch (response.runtimeType) {
         case UserModel:
-          gotoHome(context, response);
+          gotoHome(context, ref, response);
           break;
         default:
-          switch(response) {
+          switch (response) {
             case 'duplicate datas in the databse':
-              return _showAlertDialog(context, 'Email or username already in use.');
+              return _showAlertDialog(
+                  context, 'Email or username already in use.');
 
             case RequestStatus.networkFailure:
-              return _showAlertDialog(context, 'We couldn\'t sign you in due to network interruption.\n\nPlease check your network and try again.');
+              return _showAlertDialog(context,
+                  'We couldn\'t sign you in due to network interruption.\n\nPlease check your network and try again.');
 
             case RequestStatus.unKnownError:
-              return _showAlertDialog(context, 'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
+              return _showAlertDialog(context,
+                  'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
 
             default:
-              return _showAlertDialog(context, 'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
+              return _showAlertDialog(context,
+                  'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
           }
       }
     });
@@ -93,6 +91,7 @@ class Controller {
 
   static void onSignIn(
     BuildContext context,
+    WidgetRef ref,
     GlobalKey<FormState> formKey,
     TextEditingController emailController,
     TextEditingController passwordController,
@@ -101,50 +100,53 @@ class Controller {
     final String password = passwordController.text.trim();
 
     if (formKey.currentState?.validate() ?? false) {
-      final LoginModel signInModel = LoginModel(
-        email: email, password: password
-      );
-      _signIn(context, signInModel);
+      final LoginModel signInModel =
+          LoginModel(email: email, password: password);
+      _signIn(context, ref, signInModel);
     } else {
       Vibration.vibrate(duration: 100);
     }
   }
 
   static Future<void> _signIn(
-      BuildContext context, LoginModel signInModel) async {
+      BuildContext context, WidgetRef ref, LoginModel signInModel) async {
     _startSpinner(context, 'Please wait while we check you in.');
     ClientApi.login(signInModel)
-      .whenComplete(() => _stopSpinner(context))
+        .whenComplete(() => _stopSpinner(context))
         .then((response) {
-          switch(response.runtimeType) {
-            case UserModel:
-              gotoHome(context, response);
-              break;
+      switch (response.runtimeType) {
+        case UserModel:
+          gotoHome(context, ref, response);
+          break;
+        default:
+          switch (response) {
+            case 'wrong credentilas':
+              return _showAlertDialog(context,
+                  'Incorrect email or password. Please cross check your credentials and try again.');
+
+            case RequestStatus.networkFailure:
+              return _showAlertDialog(context,
+                  'We couldn\'t sign you in due to network interruption.\n\nPlease check your network and try again.');
+
+            case RequestStatus.unKnownError:
+              return _showAlertDialog(context,
+                  'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
+
             default:
-              switch(response) {
-                case 'wrong credentilas':
-                  return _showAlertDialog(context, 'Incorrect email or password. Please cross check your credentials and try again.');
-
-                case RequestStatus.networkFailure:
-                  return _showAlertDialog(context, 'We couldn\'t sign you in due to network interruption.\n\nPlease check your network and try again.');
-
-                case RequestStatus.unKnownError:
-                  return _showAlertDialog(context, 'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
-
-                default:
-                  return _showAlertDialog(context, 'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
-              }
+              return _showAlertDialog(context,
+                  'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
           }
+      }
     });
   }
 
-  static gotoHome(BuildContext context, UserModel user) {
+  static gotoHome(BuildContext context, WidgetRef ref, UserModel user) {
+    ref.read(userProvider.notifier).update((state) => user);
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => const HomePage(),
-      ),
-      (route) => false
-    );
+        MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ),
+        (route) => false);
   }
 
   static String? emailValidator(String? value) {
@@ -196,14 +198,15 @@ class Controller {
   static void onLoginNow(BuildContext context) => Navigator.pop(context);
 
   static void onRegisterNow(BuildContext context) => Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => const RegisterPage(),
-    ),
-  );
+        context,
+        MaterialPageRoute(
+          builder: (context) => const RegisterPage(),
+        ),
+      );
 
   static void onDeposit(
     BuildContext context,
+    WidgetRef ref,
     GlobalKey<FormState> formKey,
     TextEditingController phoneNumberController,
     TextEditingController amountController,
@@ -211,10 +214,29 @@ class Controller {
     final String phoneNumber = phoneNumberController.text.trim();
     final String amount = amountController.text.trim();
 
+    final user = ref.watch(userProvider)!;
     if (formKey.currentState?.validate() ?? false) {
-      final DepositModel signInModel = DepositModel(
-        id: 'email', amount: amount
-      );
+      final DepositModel model = DepositModel(id: user.id, amount: amount);
+
+      // _deposit(context, signInModel);
+    } else {
+      Vibration.vibrate(duration: 100);
+    }
+  }
+
+  static void onSend(
+    BuildContext context,
+    GlobalKey<FormState> formKey,
+    TextEditingController emailController,
+    TextEditingController phoneNumberController,
+    TextEditingController amountController,
+  ) {
+    final String phoneNumber = phoneNumberController.text.trim();
+    final String amount = amountController.text.trim();
+
+    if (formKey.currentState?.validate() ?? false) {
+      final DepositModel signInModel =
+          DepositModel(id: 'email', amount: amount);
       // _deposit(context, signInModel);
     } else {
       Vibration.vibrate(duration: 100);

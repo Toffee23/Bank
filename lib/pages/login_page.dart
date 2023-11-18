@@ -1,18 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/pages/controllers.dart';
+
 import '../utilities/text_field.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -40,113 +42,110 @@ class _LoginPageState extends State<LoginPage> {
             child: Padding(
               padding: const EdgeInsets.all(25.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.phone_android,
-                    size: 100,
-                  ),
-                  const SizedBox(height: 75),
-                  Text(
-                    'Hello Again!',
-                    style: GoogleFonts.bebasNeue(
-                      fontSize: 52,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.phone_android,
+                      size: 100,
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'Welcome back',
-                    style: TextStyle(
-                      fontSize: 20,
+                    const SizedBox(height: 75),
+                    Text(
+                      'Hello Again!',
+                      style: GoogleFonts.bebasNeue(
+                        fontSize: 52,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 50),
-
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        CustomTextFormField(
-                          controller: _emailController,
-                          focusNode: _emailFocusNode,
-                          keyboardType: TextInputType.emailAddress,
-                          hintText: 'Email',
-                          prefixIcon: const Icon(CupertinoIcons.mail),
-                          validator: Controller.emailValidator,
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Welcome back',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    const SizedBox(height: 50),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          CustomTextFormField(
+                            controller: _emailController,
+                            focusNode: _emailFocusNode,
+                            keyboardType: TextInputType.emailAddress,
+                            hintText: 'Email',
+                            prefixIcon: const Icon(CupertinoIcons.mail),
+                            validator: Controller.emailValidator,
+                          ),
+                          ValueListenableBuilder<bool>(
+                              valueListenable: _obscureTextListener,
+                              builder: (context, obscureText, child) {
+                                return CustomTextFormField(
+                                  controller: _passwordController,
+                                  focusNode: _passwordFocusNode,
+                                  obscureText: obscureText,
+                                  hintText: 'Password',
+                                  prefixIcon:
+                                      const Icon(Icons.lock_outline_rounded),
+                                  validator: Controller.password1Validator,
+                                  suffixIcon: IconButton(
+                                      onPressed: () => _obscureTextListener
+                                          .value = !obscureText,
+                                      icon: Icon(obscureText
+                                          ? CupertinoIcons.eye_slash
+                                          : CupertinoIcons.eye)),
+                                );
+                              }),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        Controller.onSignIn(
+                          context,
+                          ref,
+                          _formKey,
+                          _emailController,
+                          _passwordController,
+                        );
+                      },
+                      style: ButtonStyle(
+                          shape: MaterialStatePropertyAll(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0))),
+                          minimumSize: const MaterialStatePropertyAll(
+                              Size(double.infinity, 42))),
+                      child: const Text(
+                        'Sign In',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
                         ),
-                        ValueListenableBuilder<bool>(
-                          valueListenable: _obscureTextListener,
-                          builder: (context, obscureText, child) {
-                            return CustomTextFormField(
-                              controller: _passwordController,
-                              focusNode: _passwordFocusNode,
-                              obscureText: obscureText,
-                              hintText: 'Password',
-                              prefixIcon: const Icon(Icons.lock_outline_rounded),
-                              validator: Controller.password1Validator,
-                              suffixIcon: IconButton(
-                                onPressed: () => _obscureTextListener.value = !obscureText,
-                                icon: Icon(obscureText ?
-                                  CupertinoIcons.eye_slash : CupertinoIcons.eye
-                                )
-                              ),
-                            );
-                          }
+                      ),
+                    ),
+                    const SizedBox(height: 25),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Not a member?',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blueGrey),
+                        ),
+                        TextButton(
+                          onPressed: () => Controller.onRegisterNow(context),
+                          child: const Text(
+                            'Register Now',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  ElevatedButton(
-                    onPressed: () {
-                      Controller.onSignIn(
-                        context,
-                        _formKey,
-                        _emailController,
-                        _passwordController,
-                      );
-                    },
-                    style: ButtonStyle(
-                        shape: MaterialStatePropertyAll(
-                            RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0))),
-                        minimumSize: const MaterialStatePropertyAll(
-                            Size(double.infinity, 42))),
-                    child: const Text(
-                      'Sign In',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 25),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Not a member?',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blueGrey),
-                      ),
-                      TextButton(
-                        onPressed: () => Controller.onRegisterNow(context),
-                        child: const Text(
-                          'Register Now',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ]
-              ),
+                  ]),
             ),
           ),
         ),

@@ -10,10 +10,10 @@ class RegisterModel {
   });
 
   Map<String, String> toJson() => {
-    'email': email,
-    'phone': phone,
-    'password': password,
-  };
+        'email': email,
+        'phone': phone,
+        'password': password,
+      };
 }
 
 class LoginModel {
@@ -26,9 +26,9 @@ class LoginModel {
   });
 
   Map<String, String> toJson() => {
-    'email': email,
-    'password': password,
-  };
+        'email': email,
+        'password': password,
+      };
 }
 
 class UserModel {
@@ -51,14 +51,14 @@ class UserModel {
   });
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'email': email,
-    'phoneNumber': phoneNumber,
-    'balance': balance,
-    'createAt': createAt,
-    'updatedAt': updatedAt,
-    'v': v,
-  };
+        'id': id,
+        'email': email,
+        'phoneNumber': phoneNumber,
+        'balance': balance,
+        'createAt': createAt,
+        'updatedAt': updatedAt,
+        'v': v,
+      };
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -71,7 +71,6 @@ class UserModel {
       v: json['__v'].toString(),
     );
   }
-
 }
 
 class DepositModel {
@@ -84,7 +83,22 @@ class DepositModel {
   });
 
   Map<String, String> toJson() => {
-    'user_id': id,
-    'amount': amount,
-  };
+        'user_id': id,
+        'amount': amount,
+      };
+}
+
+class WithdrawModel {
+  final String id;
+  final String amount;
+
+  WithdrawModel({
+    required this.id,
+    required this.amount,
+  });
+
+  Map<String, String> toJson() => {
+        'user_id': id,
+        'amount': amount,
+      };
 }

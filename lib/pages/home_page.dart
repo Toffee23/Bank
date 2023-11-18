@@ -31,12 +31,6 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Colors.grey.shade400,
         title: const Text('My Cards'),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.add)
-          ),
-        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
@@ -115,7 +109,6 @@ class _HomePageState extends State<HomePage> {
                 activeDotColor: Colors.grey.shade800,
               ),
             ),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -159,18 +152,11 @@ class _HomePageState extends State<HomePage> {
                 child: Text(
                   'Services :',
                   style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.blueGrey
-                  ),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.blueGrey),
                 ),
               ),
-            ),
-            MyListTile(
-              onTap: () {},
-              iconImagePath: 'icons/analysis.png',
-              tileTitle: 'Statistics',
-              tileSubTitle: 'Payment and Income',
             ),
             MyListTile(
               iconImagePath: 'icons/cash-flow.png',
@@ -180,7 +166,9 @@ class _HomePageState extends State<HomePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => TransactionPage(
-                    transactions: transactions.map((e) => Transaction.fromJson(e)).toList(),
+                    transactions: transactions
+                        .map((e) => Transaction.fromJson(e))
+                        .toList(),
                   ),
                 ),
               ),

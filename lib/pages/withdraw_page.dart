@@ -49,15 +49,15 @@ class _WithDrawPageState extends ConsumerState<WithDrawPage> {
                     key: _formKey,
                     child: Column(
                       children: <CustomTextFormField>[
-                        CustomTextFormField(
-                          controller: _emailController,
-                          focusNode: _emailFocusNode,
-                          keyboardType: TextInputType.text,
-                          hintText: 'Email',
-                          prefixIcon: const Icon(CupertinoIcons.mail),
+                        // CustomTextFormField(
+                        //   controller: _emailController,
+                        //   focusNode: _emailFocusNode,
+                        //   keyboardType: TextInputType.text,
+                        //   hintText: 'Sender\'s Email',
+                        //   prefixIcon: const Icon(CupertinoIcons.mail),
 
-                          // validator: Controller.phoneNumberValidator,
-                        ),
+                        //   // validator: Controller.phoneNumberValidator,
+                        // ),
                         CustomTextFormField(
                           controller: _phoneNumberController,
                           focusNode: _phoneNumberFocusNode,
@@ -89,9 +89,8 @@ class _WithDrawPageState extends ConsumerState<WithDrawPage> {
                           context,
                           ref,
                           _formKey,
-                          _emailController,
                           _phoneNumberController,
-                          // _amountController,
+                          _amountController,
                         );
                       },
                       text: 'Withdraw money',

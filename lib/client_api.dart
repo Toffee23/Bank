@@ -99,7 +99,7 @@ class ClientApi {
   }
 
   static Future<dynamic> withdraw(WithdrawModel model) async {
-    const String url = "$_baseUrl$_deposit";
+    const String url = "$_baseUrl$_withdraw";
 
     try {
       final http.Response response = await http.post(
@@ -124,34 +124,34 @@ class ClientApi {
     }
   }
 
-  static Future<dynamic> send(DepositModel model) async {
-    const String url = "$_baseUrl$_deposit";
+  // static Future<dynamic> send(DepositModel model) async {
+  //   const String url = "$_baseUrl$_transfer";
 
-    try {
-      final http.Response response = await http.post(
-        Uri.parse(url),
-        headers: headers,
-        body: jsonEncode(model.toJson()),
-      );
+  //   try {
+  //     final http.Response response = await http.post(
+  //       Uri.parse(url),
+  //       headers: headers,
+  //       body: jsonEncode(model.toJson()),
+  //     );
 
-      log('Got response: ${response.body}');
+  //     log('Got response: ${response.body}');
 
-      if (response.statusCode == 200) {
-        return UserModel.fromJson(jsonDecode(response.body));
-      } else {
-        return jsonDecode(response.body);
-      }
-    } on SocketException catch (e) {
-      log('Failed due to Network issue $e');
-      return RequestStatus.networkFailure;
-    } catch (e) {
-      log('Failed mostly from the server $e');
-      return RequestStatus.unKnownError;
-    }
-  }
+  //     if (response.statusCode == 200) {
+  //       return UserModel.fromJson(jsonDecode(response.body));
+  //     } else {
+  //       return jsonDecode(response.body);
+  //     }
+  //   } on SocketException catch (e) {
+  //     log('Failed due to Network issue $e');
+  //     return RequestStatus.networkFailure;
+  //   } catch (e) {
+  //     log('Failed mostly from the server $e');
+  //     return RequestStatus.unKnownError;
+  //   }
+  // }
 
   static Future<dynamic> transfer(DepositModel model) async {
-    const String url = "$_baseUrl$_deposit";
+    const String url = "$_baseUrl$_transfer";
 
     try {
       final http.Response response = await http.post(

@@ -53,7 +53,7 @@ class _SendPageState extends State<SendPage> {
                           controller: _emailController,
                           focusNode: _emailFocusNode,
                           keyboardType: TextInputType.text,
-                          hintText: 'Email',
+                          hintText: 'Sender\'s Email',
                           prefixIcon: const Icon(CupertinoIcons.mail),
 
                           // validator: Controller.phoneNumberValidator,
@@ -62,7 +62,7 @@ class _SendPageState extends State<SendPage> {
                           controller: _phoneNumberController,
                           focusNode: _phoneNumberFocusNode,
                           keyboardType: TextInputType.phone,
-                          hintText: 'Phone number',
+                          hintText: 'Receiver\'s Phone number',
                           prefixText: '+ 234 ',
                           inputFormatters: [CustomTextInputFormatter()],
                           prefixIcon: const Icon(CupertinoIcons.phone),
@@ -84,18 +84,17 @@ class _SendPageState extends State<SendPage> {
                   ),
                   const SizedBox(height: 20.0),
                   CustomElevatedButton(
-                  onPressed: () {
-                      Controller.onSend(
-                        context,
-                        _formKey,
-                        _emailController,
-                        _phoneNumberController,
-                        _amountController,
-                      );
-                    },
-                    text: 'Send money',
-                    icon: const Icon(CupertinoIcons.arrow_up_right_square)
-                  ),
+                      onPressed: () {
+                        Controller.onSend(
+                          context,
+                          _formKey,
+                          _emailController,
+                          _phoneNumberController,
+                          _amountController,
+                        );
+                      },
+                      text: 'Send money',
+                      icon: const Icon(CupertinoIcons.arrow_up_right_square)),
                 ]),
           ),
         ),

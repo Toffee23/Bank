@@ -223,7 +223,8 @@ class Controller {
     log(user.id);
     // return;
     if (formKey.currentState?.validate() ?? false) {
-      final DepositModel model = DepositModel(phone: user.phoneNumber, amount: amount);
+      final DepositModel model =
+          DepositModel(phone: user.phoneNumber, amount: amount);
 
       _deposit(context, ref, model);
     } else {
@@ -278,7 +279,8 @@ class Controller {
     log(user.id);
     // return;
     if (formKey.currentState?.validate() ?? false) {
-      final DepositModel model = DepositModel(phone: user.phoneNumber, amount: amount);
+      final DepositModel model =
+          DepositModel(phone: user.phoneNumber, amount: amount);
 
       _withdraw(context, ref, model);
     } else {
@@ -326,12 +328,13 @@ class Controller {
     TextEditingController phoneNumberController,
     TextEditingController amountController,
   ) {
-    final String phoneNumber = phoneNumberController.text.trim();
-    final String amount = amountController.text.trim();
+    final int phoneNumber = int.parse(phoneNumberController.text.trim());
+    final String email = emailController.text.trim();
+    final int amount = int.parse(amountController.text.trim());
 
     if (formKey.currentState?.validate() ?? false) {
       final SendModel signInModel =
-          SendModel(id: 'email', amount: amount, recipientId: '');
+          SendModel(email: email, amount: amount, recieverPhoneNo: phoneNumber);
       // _deposit(context, signInModel);
     } else {
       Vibration.vibrate(duration: 100);

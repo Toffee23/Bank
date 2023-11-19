@@ -74,15 +74,11 @@ class ClientApi {
     const String url = "$_baseUrl$_deposit";
 
     try {
-      log('Message');
       final http.Response response = await http.post(
         Uri.parse(url),
         headers: headers,
         body: jsonEncode(model.toJson()),
       );
-
-      log('Got response: ${response.body}');
-      log('Got response: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         return RequestStatus.success;
@@ -108,12 +104,14 @@ class ClientApi {
         body: jsonEncode(model.toJson()),
       );
 
-      log('Got response: ${response.body}');
-
+      log(response.body);
       if (response.statusCode == 200) {
-        return UserModel.fromJson(jsonDecode(response.body));
+        return RequestStatus.success;
       } else {
-        return jsonDecode(response.body);
+        if (jsonDecode(response.body) == "Insufficient funds") {
+          return RequestStatus.insufficientFunds;
+        }
+        return RequestStatus.failed;
       }
     } on SocketException catch (e) {
       log('Failed due to Network issue $e');
@@ -202,4 +200,11 @@ class ClientApi {
 //       return RequestStatus.unKnownError;
 //     }
 //   }
-enum RequestStatus { networkFailure, serverError, unKnownError, success, failed }
+enum RequestStatus {
+  networkFailure,
+  serverError,
+  unKnownError,
+  success,
+  failed,
+  insufficientFunds
+}

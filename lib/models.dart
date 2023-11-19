@@ -128,7 +128,7 @@ class SendModel {
 
 class WithdrawModel {
   final int phone;
-  final int amount;
+  final num amount;
 
   WithdrawModel({
     required this.phone,

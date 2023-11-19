@@ -239,7 +239,6 @@ class Controller {
     TextEditingController phoneNumberController,
     TextEditingController amountController,
   ) {
-
     if (formKey.currentState?.validate() ?? false) {
       final int phoneNumber = int.parse(phoneNumberController.text.trim());
       final amount = num.parse(amountController.text.trim().formatToString);
@@ -253,17 +252,16 @@ class Controller {
   static Future<void> _deposit(
       BuildContext context, WidgetRef ref, DepositModel model) async {
     onFocusField();
-    _startSpinner(context, 'Please wait while we execute your transaction');
+    _startSpinner(context, 'Please wait while we process your transaction');
     ClientApi.deposit(model)
       .whenComplete(() => _stopSpinner(context))
         .then((response) {
-          log(response.toString());
       switch (response) {
         case RequestStatus.success:
           final balance = ref.watch(userModelStateNotifierProvider).balance + model.amount;
           ref.read(userModelStateNotifierProvider.notifier).update(balance: balance);
           return _showAlertDialog(context,
-            'Deposit of ${model.amount} was success and your new balance is $balance');
+            'Deposit of ${model.amount.toString().formatToPrice} was success and your new balance is ${balance.toString().formatToPrice}');
         default:
           switch (response) {
             case RequestStatus.failed:
@@ -289,16 +287,10 @@ class Controller {
     TextEditingController phoneNumberController,
     TextEditingController amountController,
   ) {
-    final int phoneNumber = int.parse(phoneNumberController.text.trim());
-    final int amount = int.parse(amountController.text.trim());
-
-    final user = ref.watch(userProvider)!;
-    log(user.id);
-    // return;
     if (formKey.currentState?.validate() ?? false) {
-      final DepositModel model =
-          DepositModel(phone: user.phoneNumber, amount: amount);
-
+      final int phoneNumber = int.parse(phoneNumberController.text.trim());
+      final amount = num.parse(amountController.text.trim().formatToString);
+      final WithdrawModel model = WithdrawModel(phone: phoneNumber, amount: amount);
       _withdraw(context, ref, model);
     } else {
       Vibration.vibrate(duration: 100);
@@ -306,32 +298,35 @@ class Controller {
   }
 
   static Future<void> _withdraw(
-      BuildContext context, WidgetRef ref, DepositModel model) async {
-    _startSpinner(context, 'Please wait while we check you in.');
-    ClientApi.deposit(model)
-        .whenComplete(() => _stopSpinner(context))
+      BuildContext context, WidgetRef ref, WithdrawModel model) async {
+    onFocusField();
+    _startSpinner(context, 'Please wait while we process your transaction');
+    ClientApi.withdraw(model)
+      .whenComplete(() => _stopSpinner(context))
         .then((response) {
-      switch (response.runtimeType) {
-        case UserModel:
-          gotoHome(context, ref, response);
-          break;
+      switch (response) {
+        case RequestStatus.success:
+          final balance = ref.watch(userModelStateNotifierProvider).balance - model.amount;
+          ref.read(userModelStateNotifierProvider.notifier).update(balance: balance);
+          return _showAlertDialog(context,
+            'Withdrawal of ${model.amount.toString().formatToPrice} was success and your new balance is ${balance.toString().formatToPrice}');
         default:
           switch (response) {
-            case 'wrong credentilas':
+            case RequestStatus.insufficientFunds:
               return _showAlertDialog(context,
-                  'Incorrect email or password. Please cross check your credentials and try again.');
+                  'Insufficient Funds.\n\nPlease fund your wallet first by depositing from you local bank or ask a friend to transfer some funds to you.');
+
+            case RequestStatus.failed:
+              return _showAlertDialog(context,
+                  'Your entered phone number did not match any of our account.\n\nPlease check the number and try again.');
 
             case RequestStatus.networkFailure:
               return _showAlertDialog(context,
-                  'We couldn\'t sign you in due to network interruption.\n\nPlease check your network and try again.');
-
-            case RequestStatus.unKnownError:
-              return _showAlertDialog(context,
-                  'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
+                  'The transaction could not be completed due to network interruption.\n\nPlease check your network and try again.');
 
             default:
               return _showAlertDialog(context,
-                  'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
+                  'Process could not be be completed, please try again.\n\nIf error persists, please reach the admin for rectification.');
           }
       }
     });

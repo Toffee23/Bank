@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:portfolio/pages/controllers.dart';
-import 'package:portfolio/utilities/text_field.dart';
+import 'package:portfolio/controllers.dart';
+import 'package:portfolio/widgets/text_field.dart';
 
-import '../utilities/my_button.dart';
+import '../widgets/my_button.dart';
 
 class SendPage extends StatefulWidget {
   const SendPage({super.key});

@@ -1,43 +1,44 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:portfolio/client_api.dart';
 import 'package:portfolio/pages/home_page.dart';
-import 'package:portfolio/pages/models.dart';
+import 'package:portfolio/models.dart';
 import 'package:portfolio/pages/register_page.dart';
 import 'package:portfolio/providers.dart';
-import 'package:portfolio/utilities/dialogs.dart';
+import 'package:portfolio/widgets/dialogs.dart';
 import 'package:portfolio/utils.dart';
 import 'package:vibration/vibration.dart';
-
-import 'login_page.dart';
+import 'pages/login_page.dart';
 
 class Controller {
   static void _startSpinner(BuildContext context, String message) {
     showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) => WillPopScope(
-            onWillPop: () async => false,
-            child: LoadingDialog(message: message)));
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => WillPopScope(
+        onWillPop: () async => false,
+        child: LoadingDialog(message: message)
+      )
+    );
   }
 
   static void _stopSpinner(BuildContext context) => Navigator.of(context).pop();
 
   static void _showAlertDialog(BuildContext context, String message) {
     showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text('Alert'),
-              content: Text(message),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Dismiss'),
-                )
-              ],
-            ));
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Alert'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Dismiss'),
+          )
+        ],
+      )
+    );
   }
 
   static void onSignUp(
@@ -53,8 +54,8 @@ class Controller {
     final String password = password1Controller.text.trim();
 
     if (formKey.currentState?.validate() ?? false) {
-      final RegisterModel signupModel =
-          RegisterModel(email: email, phone: phoneNumber, password: password);
+      final RegisterModel signupModel = RegisterModel(
+        email: email, phone: phoneNumber, password: password);
       _signUp(context, ref, signupModel);
     } else {
       Vibration.vibrate(duration: 100);
@@ -65,7 +66,7 @@ class Controller {
       BuildContext context, WidgetRef ref, signupModel) async {
     _startSpinner(context, 'Please wait while we\'re signing you up.');
     ClientApi.register(signupModel)
-        .whenComplete(() => _stopSpinner(context))
+      .whenComplete(() => _stopSpinner(context))
         .then((response) {
       switch (response.runtimeType) {
         case UserModel:
@@ -75,7 +76,7 @@ class Controller {
           switch (response) {
             case 'duplicate datas in the databse':
               return _showAlertDialog(
-                  context, 'Email or username already in use.');
+                context, 'Email or username already in use.');
 
             case RequestStatus.networkFailure:
               return _showAlertDialog(context,
@@ -145,13 +146,14 @@ class Controller {
     });
   }
 
-  static gotoHome(BuildContext context, WidgetRef ref, UserModel user) {
-    ref.read(userProvider.notifier).update((state) => user);
+  static gotoHome(BuildContext context, WidgetRef ref, UserModel loggedInUser) {
+    ref.read(userModelStateNotifierProvider.notifier).updateUser(loggedInUser);
+
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
-        (route) => false);
+      MaterialPageRoute(
+        builder: (context) => const HomePage(),
+      ),
+      (route) => false);
   }
 
   static String? emailValidator(String? value) {
@@ -203,11 +205,11 @@ class Controller {
   static void onLoginNow(BuildContext context) => Navigator.pop(context);
 
   static void onRegisterNow(BuildContext context) => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const RegisterPage(),
-        ),
-      );
+    context,
+    MaterialPageRoute(
+      builder: (context) => const RegisterPage(),
+    ),
+  );
 
   static void onDeposit(
     BuildContext context,
@@ -216,17 +218,12 @@ class Controller {
     TextEditingController phoneNumberController,
     TextEditingController amountController,
   ) {
-    final int phoneNumber = int.parse(phoneNumberController.text.trim());
-    final int amount = int.parse(amountController.text.trim());
 
-    final user = ref.watch(userProvider)!;
-    log(user.id);
-    // return;
     if (formKey.currentState?.validate() ?? false) {
-      final DepositModel model =
-          DepositModel(phone: user.phoneNumber, amount: amount);
-
-      _deposit(context, ref, model);
+      final int phoneNumber = int.parse(phoneNumberController.text.trim());
+      final int amount = int.parse(amountController.text.trim());
+      final DepositModel model = DepositModel(phone: phoneNumber, amount: amount);
+      // _deposit(context, ref, model);
     } else {
       Vibration.vibrate(duration: 100);
     }

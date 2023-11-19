@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:portfolio/pages/models.dart';
+import 'package:portfolio/models.dart';
 
 class ClientApi {
   static const String _baseUrl =

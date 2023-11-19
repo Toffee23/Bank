@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/pages/transaction_page.dart';
 
 class MyListTile extends StatelessWidget {
   final String iconImagePath;
@@ -52,3 +53,50 @@ class MyListTile extends StatelessWidget {
     );
   }
 }
+
+class TransactionListTile extends StatelessWidget {
+  const TransactionListTile({
+    Key? key,
+    this.isEven = false,
+    required this.transaction,
+  }) : super(key: key);
+  final bool? isEven;
+  final Transaction transaction;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: isEven == true
+          ? Colors.grey.shade100 : null,
+      ),
+      child: ListTile(
+        leading: const CircleAvatar(
+          child: Icon(Icons.monetization_on),
+        ), //transaction
+        title: Text(transaction.description,
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueGrey.shade700)
+        ),
+        subtitle: Text(
+          transaction.date,
+          style: const TextStyle(color: Colors.blueGrey),
+        ),
+        trailing: Text(
+          '${transaction.type == 'credit' ? '+' : '-'}${transaction.amount}',
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: transaction.type == 'credit'
+                  ? Colors.green
+                  : Colors.red),
+        ), // Transaction amount
+        onTap: () {
+          // Handle onTap event (if needed)
+        },
+      ),
+    );
+  }
+}
+

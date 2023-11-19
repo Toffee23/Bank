@@ -1,155 +1,175 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:portfolio/pages/deposit_page.dart';
 import 'package:portfolio/pages/send_page.dart';
 import 'package:portfolio/pages/transaction_page.dart';
 import 'package:portfolio/pages/withdraw_page.dart';
-import 'package:portfolio/utilities/my_button.dart';
-import 'package:portfolio/utilities/my_card.dart';
-import 'package:portfolio/utilities/my_list_tile.dart';
+import 'package:portfolio/providers.dart';
+import 'package:portfolio/widgets/my_button.dart';
+import 'package:portfolio/widgets/my_card.dart';
+import 'package:portfolio/widgets/my_list_tile.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userProvider = ref.watch(userModelStateNotifierProvider);
 
-class _HomePageState extends State<HomePage> {
-  final PageController _controller = PageController();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        backgroundColor: Colors.blue.shade400,
-        title: const Text('Welcome'),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.grey[200],
-        child: Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HomePage(),
-                  ),
-                ),
-                icon: const Icon(Icons.home),
-                iconSize: 32,
-                color: Colors.blue,
+        elevation: 0.0,
+        backgroundColor: const Color(0xFF008284),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Good morning',
+              style: TextStyle(
+                fontSize: 13,
+                letterSpacing: .6,
+                color: Colors.white70.withOpacity(.5)
               ),
-              IconButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SendPage(),
-                  ),
-                ),
-                icon: const Icon(Icons.send),
-                iconSize: 32,
-                color: Colors.blue,
+            ),
+            const SizedBox(height: 2.0),
+            Text(
+              'Odunayo Agboola',
+              style: TextStyle(
+                letterSpacing: .7,
+                color: Colors.white70.withOpacity(1)
               ),
-            ],
-          ),
+            )
+          ],
         ),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                CupertinoIcons.bell,
+                color: Colors.white70,
+              ),
+            ),
+          )
+        ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 160,
-              child: PageView(
-                scrollDirection: Axis.horizontal,
-                controller: _controller,
-                physics: const BouncingScrollPhysics(), // Added physics
-                children: const [
-                  MyCard(
-                    balance: 5250.20,
-                    phoneNumber: 08087940090,
-                    color: Colors.blue,
+      body: Stack(
+        children: <Widget>[
+          Container(
+            height: 120,
+            decoration: const BoxDecoration(
+              color: Color(0xFF008284)
+            ),
+          ),
+          Column(
+            children: <Widget>[
+              MyCard(
+                balance: userProvider.balance,
+                phoneNumber: userProvider.phoneNumber,
+                color: Colors.blue,
+              ),
+              const SizedBox(height: 18),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <MyButton>[
+                  MyButton(
+                    iconImagePath: 'icons/send-money.png',
+                    buttonText: 'Send',
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SendPage(),
+                      ),
+                    ),
+                  ),
+                  MyButton(
+                    iconImagePath: 'icons/deposit.png',
+                    buttonText: 'Deposit',
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const DepositPage(),
+                      ),
+                    ),
+                  ),
+                  MyButton(
+                    iconImagePath: 'icons/money-withdrawal.png',
+                    buttonText: 'withdraw',
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const WithDrawPage(),
+                      ),
+                    ),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 18),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                MyButton(
-                  iconImagePath: 'icons/send-money.png',
-                  buttonText: 'Send',
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SendPage(),
+              const SizedBox(height: 20),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 15.0, bottom: 5.0),
+                  child: Text(
+                    'Transaction history',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
+                      letterSpacing: .6
                     ),
-                  ),
-                ),
-                MyButton(
-                  iconImagePath: 'icons/deposit.png',
-                  buttonText: 'Deposit',
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const DepositPage(),
-                    ),
-                  ),
-                ),
-                MyButton(
-                  iconImagePath: 'icons/money-withdrawal.png',
-                  buttonText: 'withdraw',
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const WithDrawPage(),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.only(left: 18.0),
-                child: Text(
-                  'Services :',
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.blueGrey),
-                ),
-              ),
-            ),
-            MyListTile(
-              iconImagePath: 'icons/cash-flow.png',
-              tileTitle: 'Transactions',
-              tileSubTitle: 'Transaction History',
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TransactionPage(
-                    transactions: transactions
-                        .map((e) => Transaction.fromJson(e))
-                        .toList(),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
+
+              Expanded(
+                child: DefaultTabController(
+                  length: 3,
+                  child: Column(
+                    children: <Widget>[
+                      TabBar(
+                        labelColor: Theme.of(context).primaryColor,
+                        unselectedLabelColor: Colors.grey,
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                        tabs: const <Tab>[
+                          Tab(text: 'All', height: 38.0),
+                          Tab(text: 'Credits', height: 38.0),
+                          Tab(text: 'Debits', height: 38.0),
+                        ],
+                      ),
+
+                      Expanded(
+                        child: TabBarView(
+                          children: <Widget>[
+                            ListView.separated(
+                              itemCount: transactions.length,
+                              separatorBuilder: (_, __) => const Divider(height: 0.0),
+                              itemBuilder: (BuildContext context, int index) {
+                                final data = transactions.elementAt(index);
+                                final transaction = Transaction.fromJson(data);
+                                return TransactionListTile(
+                                  transaction: transaction,
+                                );
+                              },
+                            ),
+                            const Center(
+                              child: Text('Tab 2 Content'),
+                            ),
+                            const Center(
+                              child: Text('Tab 3 Content'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

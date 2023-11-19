@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:portfolio/pages/controllers.dart';
+import 'package:portfolio/controllers.dart';
 
-import '../utilities/text_field.dart';
+import '../widgets/text_field.dart';
 
 final isValidated = StateProvider<bool>((ref) => false);
 

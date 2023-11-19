@@ -51,14 +51,14 @@ class UserModel {
   });
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'email': email,
-        'phoneNumber': phoneNumber,
-        'balance': balance,
-        'createAt': createAt,
-        'updatedAt': updatedAt,
-        'v': v,
-      };
+    'id': id,
+    'email': email,
+    'phoneNumber': phoneNumber,
+    'balance': balance,
+    'createAt': createAt,
+    'updatedAt': updatedAt,
+    'v': v,
+  };
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -69,6 +69,26 @@ class UserModel {
       createAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
       v: json['__v'].toString(),
+    );
+  }
+
+  UserModel copyWith({
+    String? id,
+    String? email,
+    int? phoneNumber,
+    String? balance,
+    DateTime? createAt,
+    DateTime? updatedAt,
+    String? v,
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      email: email ?? this.email,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      balance: balance ?? this.balance,
+      createAt: createAt ?? this.createAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      v: v ?? this.v,
     );
   }
 }
@@ -83,9 +103,9 @@ class DepositModel {
   });
 
   Map<String, dynamic> toJson() => {
-        'phone': phone,
-        'amount': amount,
-      };
+    'phone': phone,
+    'amount': amount,
+  };
 }
 
 class SendModel {
@@ -100,10 +120,10 @@ class SendModel {
   });
 
   Map<String, dynamic> toJson() => {
-        'sender_email': email,
-        'reciever_phoneno': recieverPhoneNo,
-        'amount': amount,
-      };
+    'sender_email': email,
+    'reciever_phoneno': recieverPhoneNo,
+    'amount': amount,
+  };
 }
 
 class WithdrawModel {
@@ -116,7 +136,7 @@ class WithdrawModel {
   });
 
   Map<String, dynamic> toJson() => {
-        'phone': phone,
-        'amount': amount,
-      };
+    'phone': phone,
+    'amount': amount,
+  };
 }

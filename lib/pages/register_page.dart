@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:portfolio/pages/controllers.dart';
-import 'package:portfolio/utilities/text_field.dart';
+import 'package:portfolio/controllers.dart';
+import 'package:portfolio/widgets/text_field.dart';
 
 class RegisterPage extends ConsumerStatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);

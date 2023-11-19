@@ -7,7 +7,7 @@ extension StringUtils on String {
 
   bool get isNotEmail => !isEmail;
 
-  bool get hasDigit => RegExp(r'[0-9]').hasMatch(this);
+  bool get hasDigit => RegExp(r'\d').hasMatch(this);
 
   bool get hasUppercase => RegExp(r'[A-Z]').hasMatch(this);
 

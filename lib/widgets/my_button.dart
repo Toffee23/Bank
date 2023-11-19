@@ -17,35 +17,29 @@ class MyButton extends StatelessWidget {
     return MaterialButton(
       onPressed: onPressed,
       padding: const EdgeInsets.all(12.0),
-      minWidth: 0,
       elevation: 0,
       color: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30.0)
       ),
       child: Column(
-        children: [
-          Container(
-            height: 60,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.white,
-                  blurRadius: 30,
-                  spreadRadius: 10,
-                )
-              ],
+        children: <Widget>[
+          Card(
+            elevation: 6,
+            child: Container(
+              height: 70,
+              color: Theme.of(context).primaryColor.withOpacity(.07),
+              padding: const EdgeInsets.all(15.0),
+              child: Image.asset(iconImagePath),
             ),
-            child: Image.asset(iconImagePath),
           ),
           const SizedBox(height: 8.0),
           Text(
-            buttonText, // Use the buttonText variable here
+            buttonText,
             style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold, // Corrected the typo here
-              color: Colors.grey[700],
+              letterSpacing: .6,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade600,
             ),
           ),
         ],

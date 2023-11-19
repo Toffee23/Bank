@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:portfolio/utilities/my_button.dart';
-import 'package:portfolio/utilities/text_field.dart';
+import 'package:portfolio/widgets/my_button.dart';
+import 'package:portfolio/widgets/text_field.dart';
 
-import 'controllers.dart';
+import '../controllers.dart';
 
 class DepositPage extends ConsumerStatefulWidget {
   const DepositPage({super.key});

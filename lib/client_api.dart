@@ -177,4 +177,29 @@ class ClientApi {
   }
 }
 
+//  static Future<dynamic> transfer(DepositModel model) async {
+//     const String url = "$_baseUrl$_transactionHistory";
+
+//     try {
+//       final http.Response response = await http.get(
+//         Uri.parse(url),
+//         headers: headers,
+//         body: jsonEncode(model.toJson()),
+//       );
+
+//       log('Got response: ${response.body}');
+
+//       if (response.statusCode == 200) {
+//         return UserModel.fromJson(jsonDecode(response.body));
+//       } else {
+//         return jsonDecode(response.body);
+//       }
+//     } on SocketException catch (e) {
+//       log('Failed due to Network issue $e');
+//       return RequestStatus.networkFailure;
+//     } catch (e) {
+//       log('Failed mostly from the server $e');
+//       return RequestStatus.unKnownError;
+//     }
+//   }
 enum RequestStatus { networkFailure, serverError, unKnownError, success }

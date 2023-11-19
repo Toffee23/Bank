@@ -10,7 +10,7 @@ class TransactionPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
-        backgroundColor: Colors.grey.shade400,
+        backgroundColor: Colors.blue.shade400,
         title: const Text('Transactions'),
         centerTitle: true,
       ),
@@ -23,7 +23,7 @@ class TransactionPage extends StatelessWidget {
             margin: const EdgeInsets.all(15),
             padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
-                color: Colors.cyan, borderRadius: BorderRadius.circular(8.0)),
+                color: Colors.blue, borderRadius: BorderRadius.circular(8.0)),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

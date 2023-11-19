@@ -2,17 +2,14 @@ import "package:flutter/material.dart";
 
 class MyCard extends StatelessWidget {
   final double balance;
-  final int cardNumber;
-  final int expiryMonth;
-  final int expiryYear;
+  final int phoneNumber;
+
   final Color color;
 
   const MyCard({
     Key? key,
     required this.balance,
-    required this.cardNumber,
-    required this.expiryMonth,
-    required this.expiryYear,
+    required this.phoneNumber,
     required this.color,
   }) : super(key: key);
 
@@ -31,21 +28,19 @@ class MyCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
+            const SizedBox(height: 10),
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'Balance',
                   style: TextStyle(
                     color: Colors.white,
                   ),
                 ),
-                Image.asset(
-                  'icons/visa.png',
-                  height: 50,
-                )
               ],
             ),
+            const SizedBox(height: 10),
             Text(
               '\$$balance',
               style: const TextStyle(
@@ -54,26 +49,18 @@ class MyCard extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-
-            const Spacer(),
-
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // card number
                 Text(
-                  cardNumber.toString(),
+                  phoneNumber.toString(),
                   style: const TextStyle(
                     color: Colors.white,
                   ),
                 ),
                 // card expiry date
-                Text(
-                  '$expiryMonth/$expiryYear',
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
               ],
             )
           ],

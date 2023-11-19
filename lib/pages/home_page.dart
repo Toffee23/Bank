@@ -6,7 +6,6 @@ import 'package:portfolio/pages/withdraw_page.dart';
 import 'package:portfolio/utilities/my_button.dart';
 import 'package:portfolio/utilities/my_card.dart';
 import 'package:portfolio/utilities/my_list_tile.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,38 +28,37 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
-        backgroundColor: Colors.grey.shade400,
-        title: const Text('My Cards'),
+        backgroundColor: Colors.blue.shade400,
+        title: const Text('Welcome'),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Colors.pink,
-        child: const Icon(
-          Icons.monetization_on,
-          size: 32,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         color: Colors.grey[200],
         child: Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomePage(),
+                  ),
+                ),
                 icon: const Icon(Icons.home),
                 iconSize: 32,
-                color: Colors.pink[200],
+                color: Colors.blue,
               ),
               IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.settings,
-                  size: 32,
-                  color: Colors.grey,
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SendPage(),
+                  ),
                 ),
+                icon: const Icon(Icons.send),
+                iconSize: 32,
+                color: Colors.blue,
               ),
             ],
           ),
@@ -76,39 +74,16 @@ class _HomePageState extends State<HomePage> {
                 scrollDirection: Axis.horizontal,
                 controller: _controller,
                 physics: const BouncingScrollPhysics(), // Added physics
-                children: [
+                children: const [
                   MyCard(
                     balance: 5250.20,
-                    cardNumber: 12345678,
-                    expiryMonth: 10,
-                    expiryYear: 24,
-                    color: Colors.deepPurple.shade400,
-                  ),
-                  MyCard(
-                    balance: 67839.9,
-                    cardNumber: 12345678,
-                    expiryMonth: 02,
-                    expiryYear: 20,
-                    color: Colors.orange.shade400,
-                  ),
-                  MyCard(
-                    balance: 093920.38,
-                    cardNumber: 12345678,
-                    expiryMonth: 08,
-                    expiryYear: 12,
-                    color: Colors.blue.shade400,
+                    phoneNumber: 08087940090,
+                    color: Colors.blue,
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 18),
-            SmoothPageIndicator(
-              controller: _controller,
-              count: 3,
-              effect: ExpandingDotsEffect(
-                activeDotColor: Colors.grey.shade800,
-              ),
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [

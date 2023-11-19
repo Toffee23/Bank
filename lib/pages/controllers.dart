@@ -238,7 +238,6 @@ class Controller {
     ClientApi.deposit(model)
         .whenComplete(() => _stopSpinner(context))
         .then((response) {
-      return;
       switch (response.runtimeType) {
         case UserModel:
           gotoHome(context, ref, response);
@@ -294,7 +293,6 @@ class Controller {
     ClientApi.deposit(model)
         .whenComplete(() => _stopSpinner(context))
         .then((response) {
-      return;
       switch (response.runtimeType) {
         case UserModel:
           gotoHome(context, ref, response);

@@ -33,7 +33,7 @@ class _SendPageState extends State<SendPage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      onTap: Controller.onFocusField,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Send Money'),
@@ -64,7 +64,7 @@ class _SendPageState extends State<SendPage> {
                           keyboardType: TextInputType.phone,
                           hintText: 'Receiver\'s Phone number',
                           prefixText: '+ 234 ',
-                          inputFormatters: [CustomTextInputFormatter()],
+                          inputFormatters: [PhoneNumberInputFormatter()],
                           prefixIcon: const Icon(CupertinoIcons.phone),
                           // validator: Controller.phoneNumberValidator,
                         ),

@@ -41,6 +41,8 @@ class Controller {
     );
   }
 
+  static void onFocusField() => FocusManager.instance.primaryFocus?.unfocus();
+
   static void onSignUp(
     BuildContext context,
     WidgetRef ref,
@@ -64,6 +66,7 @@ class Controller {
 
   static Future<void> _signUp(
       BuildContext context, WidgetRef ref, signupModel) async {
+    onFocusField();
     _startSpinner(context, 'Please wait while we\'re signing you up.');
     ClientApi.register(signupModel)
       .whenComplete(() => _stopSpinner(context))
@@ -116,6 +119,7 @@ class Controller {
 
   static Future<void> _signIn(
       BuildContext context, WidgetRef ref, LoginModel signInModel) async {
+    onFocusField();
     _startSpinner(context, 'Please wait while we check you in.');
     ClientApi.login(signInModel)
         .whenComplete(() => _stopSpinner(context))
@@ -202,6 +206,23 @@ class Controller {
     return null;
   }
 
+  static String? amount(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a amount';
+    }
+    // if (value.length != 10) {
+    //   return 'Phone number should be 11 in length';
+    // }
+    return null;
+  }
+
+  static updateNumber(TextEditingController amountController) {
+    final amount = amountController.text;
+    if (amount.endsWith('.')) {
+      amountController.text += '00';
+    }
+  }
+
   static void onLoginNow(BuildContext context) => Navigator.pop(context);
 
   static void onRegisterNow(BuildContext context) => Navigator.push(
@@ -221,9 +242,9 @@ class Controller {
 
     if (formKey.currentState?.validate() ?? false) {
       final int phoneNumber = int.parse(phoneNumberController.text.trim());
-      final int amount = int.parse(amountController.text.trim());
+      final amount = num.parse(amountController.text.trim().formatToString);
       final DepositModel model = DepositModel(phone: phoneNumber, amount: amount);
-      // _deposit(context, ref, model);
+      _deposit(context, ref, model);
     } else {
       Vibration.vibrate(duration: 100);
     }
@@ -231,31 +252,31 @@ class Controller {
 
   static Future<void> _deposit(
       BuildContext context, WidgetRef ref, DepositModel model) async {
-    _startSpinner(context, 'Please wait while we check you in.');
+    onFocusField();
+    _startSpinner(context, 'Please wait while we execute your transaction');
     ClientApi.deposit(model)
-        .whenComplete(() => _stopSpinner(context))
+      .whenComplete(() => _stopSpinner(context))
         .then((response) {
-      switch (response.runtimeType) {
-        case UserModel:
-          gotoHome(context, ref, response);
-          break;
+          log(response.toString());
+      switch (response) {
+        case RequestStatus.success:
+          final balance = ref.watch(userModelStateNotifierProvider).balance + model.amount;
+          ref.read(userModelStateNotifierProvider.notifier).update(balance: balance);
+          return _showAlertDialog(context,
+            'Deposit of ${model.amount} was success and your new balance is $balance');
         default:
           switch (response) {
-            case 'wrong credentilas':
+            case RequestStatus.failed:
               return _showAlertDialog(context,
-                  'Incorrect email or password. Please cross check your credentials and try again.');
+                  'Your entered phone number did not match any of our account.\n\nPlease check the number and try again.');
 
             case RequestStatus.networkFailure:
               return _showAlertDialog(context,
-                  'We couldn\'t sign you in due to network interruption.\n\nPlease check your network and try again.');
-
-            case RequestStatus.unKnownError:
-              return _showAlertDialog(context,
-                  'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
+                'The transaction could not be completed due to network interruption.\n\nPlease check your network and try again.');
 
             default:
               return _showAlertDialog(context,
-                  'We couldn\'t sign you in due to an unknown-error, please try again.\n\nIf error persists, please reach the admin for rectification.');
+                  'Process could not be be completed, please try again.\n\nIf error persists, please reach the admin for rectification.');
           }
       }
     });

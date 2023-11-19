@@ -6,9 +6,26 @@ final userProvider = StateProvider<UserModel?>((ref) => null);
 class UserModelStateNotifier extends StateNotifier<UserModel> {
   UserModelStateNotifier(UserModel user) : super(user);
 
-  // Method to update the entire user
   void updateUser(UserModel newUser) {
     state = newUser;
+  }
+
+  void update({
+    String? email,
+    int? phoneNumber,
+    num? balance,
+    DateTime? createAt,
+    DateTime? updatedAt,
+    String? v,
+  }) {
+    state = state.copyWith(
+      email: email ?? state.email,
+      phoneNumber: phoneNumber ?? state.phoneNumber,
+      balance: balance ?? state.balance,
+      createAt: createAt ?? state.createAt,
+      updatedAt: updatedAt ?? state.updatedAt,
+      v: v ?? state.v,
+    );
   }
 }
 
@@ -17,7 +34,7 @@ final userModelStateNotifierProvider = StateNotifierProvider<UserModelStateNotif
     id: '',
     email: '',
     phoneNumber: 0,
-    balance: '',
+    balance: 0,
     createAt: DateTime.now(),
     updatedAt: DateTime.now(),
     v: '',

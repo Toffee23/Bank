@@ -16,6 +16,7 @@ class CustomTextFormField extends StatelessWidget {
     this.validator,
     this.validateOnTextChange = false,
     this.inputFormatters,
+    this.onEditingComplete,
   }) : super(key: key);
   final TextEditingController? controller;
   final FocusNode? focusNode;
@@ -29,6 +30,7 @@ class CustomTextFormField extends StatelessWidget {
   final Widget? suffixIcon;
   final FormFieldValidator<String>? validator;
   final List<TextInputFormatter>? inputFormatters;
+  final VoidCallback? onEditingComplete;
 
   final textListener = ValueNotifier<bool>(false);
   final focusListener = ValueNotifier<bool>(false);
@@ -38,7 +40,7 @@ class CustomTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     textListener.value = controller?.text.isNotEmpty ?? false;
     focusListener.value = focusNode?.hasFocus ?? false;
-    final stateNotifier = TextFieldStateNotifier();
+    // final stateNotifier = TextFieldStateNotifier();
 
     // return Padding(
     //   padding: const EdgeInsets.only(bottom: 10.0),
@@ -184,6 +186,7 @@ class CustomTextFormField extends StatelessWidget {
                               inputFormatters: inputFormatters,
                               validator: validator,
                               obscureText: obscureText,
+                              onEditingComplete: onEditingComplete,
                               onChanged: (value) {
                                 textListener.value = value.isNotEmpty;
                                 // errorTextListener.value = validateOnTextChange ?
@@ -436,7 +439,7 @@ class TextFieldStateNotifier {
 // }
 
 
-class CustomTextInputFormatter extends TextInputFormatter {
+class PhoneNumberInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
@@ -448,3 +451,241 @@ class CustomTextInputFormatter extends TextInputFormatter {
     return TextEditingValue(text: oldValue.text);
   }
 }
+
+class NumberInputFormatters extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    String newText = newValue.text.replaceAll(RegExp(r'[^\d.]'), '');
+
+    final int periodCount = newText.split('.').length - 1;
+    if (periodCount > 1) newText = oldValue.text;
+
+    int newSelection = newValue.selection.start;
+    if (newSelection > newText.length) {
+      newSelection = newText.length;
+    }
+
+    return TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: newSelection),
+    );
+  }
+}
+
+
+
+
+class NumberInputFormatterAz extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue,
+      TextEditingValue newValue,
+      ) {
+    // Allow only digits and at most one period
+    String newText = newValue.text.replaceAll(RegExp(r'[^0-9.]'), '');
+
+    // Allow only one period
+    int periodCount = newText.split('.').length - 1;
+    if (periodCount > 1) {
+      newText = oldValue.text;
+    }
+
+    // Handle the case where range.start is out of bounds
+    int newSelection = newValue.selection.start;
+    if (newSelection > newText.length) {
+      newSelection = newText.length;
+    }
+
+    // Add commas as a delimiter for better readability
+    newText = _addCommas(newText);
+
+    return TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: newSelection),
+    );
+  }
+
+  String _addCommas(String text) {
+    List<String> parts = text.split('.');
+    parts[0] = _formatIntegerPart(parts[0]);
+    return parts.join('.');
+  }
+
+  String _formatIntegerPart(String integerPart) {
+    final int groupSize = 3;
+    final delimiter = ',';
+    String result = '';
+    int count = 0;
+
+    for (int i = integerPart.length - 1; i >= 0; i--) {
+      if (count != 0 && count % groupSize == 0) {
+        result = '$delimiter$result';
+      }
+      result = integerPart[i] + result;
+      count++;
+    }
+
+    return result;
+  }
+}
+
+
+class NumberInputFormatterA extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue,
+      TextEditingValue newValue,
+      ) {
+    // Allow only digits and at most one period
+    String newText = newValue.text.replaceAll(RegExp(r'[^0-9.]'), '');
+
+    // Allow only one period
+    int periodCount = newText.split('.').length - 1;
+    if (periodCount > 1) {
+      newText = oldValue.text;
+    }
+
+    // Handle the case where range.start is out of bounds
+    int newSelection = newValue.selection.start;
+    if (newSelection > newText.length) {
+      newSelection = newText.length;
+    }
+
+    // Add commas as a delimiter for better readability and adjust insertion point
+    AdjustedTextResult adjustedText = _addCommas(newText, oldValue.text, oldValue.selection);
+
+    return TextEditingValue(
+      text: adjustedText.text,
+      selection: TextSelection.collapsed(offset: adjustedText.newSelection),
+    );
+  }
+
+  AdjustedTextResult _addCommas(String newText, String oldText, TextSelection oldSelection) {
+    List<String> newParts = newText.split('.');
+    List<String> oldParts = oldText.split('.');
+
+    String formattedIntegerPart = _formatIntegerPart(newParts[0]);
+
+    int insertedCommasCount = formattedIntegerPart.length - oldParts[0].length;
+
+    // Adjust the insertion point based on the number of inserted commas
+    int newSelection = oldSelection.baseOffset + insertedCommasCount;
+
+    // Combine the formatted parts
+    String formattedText = formattedIntegerPart;
+    if (newParts.length > 1) {
+      formattedText += '.' + newParts[1];
+    }
+
+    return AdjustedTextResult(text: formattedText, newSelection: newSelection);
+  }
+
+  String _formatIntegerPart(String integerPart) {
+    final int groupSize = 3;
+    final delimiter = ',';
+    String result = '';
+    int count = 0;
+
+    for (int i = integerPart.length - 1; i >= 0; i--) {
+      if (count != 0 && count % groupSize == 0) {
+        result = '$delimiter$result';
+      }
+      result = integerPart[i] + result;
+      count++;
+    }
+
+    return result;
+  }
+}
+
+class AdjustedTextResultA {
+  final String text;
+  final int newSelection;
+
+  AdjustedTextResultA({required this.text, required this.newSelection});
+}
+
+
+class NumberInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue,
+      TextEditingValue newValue,
+      ) {
+    // Allow only digits and at most one period
+    String newText = newValue.text.replaceAll(RegExp(r'[^0-9.]'), '');
+
+    // Allow only one period
+    int periodCount = newText.split('.').length - 1;
+    if (periodCount > 1) {
+      newText = oldValue.text;
+    }
+
+    // Handle the case where range.start is out of bounds
+    int newSelection = newValue.selection.start;
+    if (newSelection > newText.length) {
+      newSelection = newText.length;
+    }
+
+    // Add commas as a delimiter for better readability and adjust insertion point
+    AdjustedTextResult adjustedText = _addCommas(newText, oldValue.text, oldValue.selection);
+
+    return TextEditingValue(
+      text: adjustedText.text,
+      selection: TextSelection.collapsed(offset: adjustedText.newSelection),
+    );
+  }
+
+  AdjustedTextResult _addCommas(String newText, String oldText, TextSelection oldSelection) {
+    List<String> newParts = newText.split('.');
+    List<String> oldParts = oldText.split('.');
+
+    String formattedIntegerPart = _formatIntegerPart(newParts[0]);
+
+    int insertedCommasCount = formattedIntegerPart.length - oldParts[0].length;
+
+    // Adjust the selection range based on the number of inserted commas
+    int baseOffset = oldSelection.baseOffset + insertedCommasCount;
+    int extentOffset = oldSelection.extentOffset + insertedCommasCount;
+
+    // Ensure the selection stays within bounds
+    baseOffset = baseOffset.clamp(0, formattedIntegerPart.length);
+    extentOffset = extentOffset.clamp(0, formattedIntegerPart.length);
+
+    // Combine the formatted parts
+    String formattedText = formattedIntegerPart;
+    if (newParts.length > 1) {
+      formattedText += '.' + newParts[1];
+    }
+
+    return AdjustedTextResult(text: formattedText, newSelection: baseOffset);
+  }
+
+  String _formatIntegerPart(String integerPart) {
+    final int groupSize = 3;
+    final delimiter = ',';
+    String result = '';
+    int count = 0;
+
+    for (int i = integerPart.length - 1; i >= 0; i--) {
+      if (count != 0 && count % groupSize == 0) {
+        result = '$delimiter$result';
+      }
+      result = integerPart[i] + result;
+      count++;
+    }
+
+    return result;
+  }
+}
+
+class AdjustedTextResult {
+  final String text;
+  final int newSelection;
+
+  AdjustedTextResult({required this.text, required this.newSelection});
+}
+

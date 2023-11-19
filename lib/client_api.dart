@@ -74,7 +74,7 @@ class ClientApi {
     const String url = "$_baseUrl$_deposit";
 
     try {
-      log('Error Message');
+      log('Message');
       final http.Response response = await http.post(
         Uri.parse(url),
         headers: headers,
@@ -82,12 +82,12 @@ class ClientApi {
       );
 
       log('Got response: ${response.body}');
+      log('Got response: ${response.statusCode}');
 
       if (response.statusCode == 200) {
-        print(response.body);
-        return UserModel.fromJson(jsonDecode(response.body));
+        return RequestStatus.success;
       } else {
-        return jsonDecode(response.body);
+        return RequestStatus.failed;
       }
     } on SocketException catch (e) {
       log('Failed due to Network issue $e');
@@ -202,4 +202,4 @@ class ClientApi {
 //       return RequestStatus.unKnownError;
 //     }
 //   }
-enum RequestStatus { networkFailure, serverError, unKnownError, success }
+enum RequestStatus { networkFailure, serverError, unKnownError, success, failed }

@@ -35,7 +35,7 @@ class UserModel {
   final String id;
   final String email;
   final int phoneNumber;
-  final String balance;
+  final num balance;
   final DateTime createAt;
   final DateTime updatedAt;
   final String v;
@@ -65,7 +65,7 @@ class UserModel {
       id: json['_id'],
       phoneNumber: json['phone'],
       email: json['email'],
-      balance: json['balance'].toString(),
+      balance: json['balance'],
       createAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
       v: json['__v'].toString(),
@@ -76,7 +76,7 @@ class UserModel {
     String? id,
     String? email,
     int? phoneNumber,
-    String? balance,
+    num? balance,
     DateTime? createAt,
     DateTime? updatedAt,
     String? v,
@@ -95,7 +95,7 @@ class UserModel {
 
 class DepositModel {
   final int phone;
-  final int amount;
+  final num amount;
 
   DepositModel({
     required this.phone,

@@ -6,6 +6,7 @@ import 'package:portfolio/pages/send_page.dart';
 import 'package:portfolio/pages/transaction_page.dart';
 import 'package:portfolio/pages/withdraw_page.dart';
 import 'package:portfolio/providers.dart';
+import 'package:portfolio/utils.dart';
 import 'package:portfolio/widgets/my_button.dart';
 import 'package:portfolio/widgets/my_card.dart';
 import 'package:portfolio/widgets/my_list_tile.dart';
@@ -67,7 +68,7 @@ class HomePage extends ConsumerWidget {
           Column(
             children: <Widget>[
               MyCard(
-                balance: userProvider.balance,
+                balance: userProvider.balance.toString().formatToPrice,
                 phoneNumber: userProvider.phoneNumber,
                 color: Colors.blue,
               ),

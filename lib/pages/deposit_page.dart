@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:portfolio/widgets/my_button.dart';
 import 'package:portfolio/widgets/text_field.dart';
-
 import '../controllers.dart';
 
 class DepositPage extends ConsumerStatefulWidget {
@@ -31,7 +30,7 @@ class _DepositPageState extends ConsumerState<DepositPage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      onTap: Controller.onFocusField,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Add Money'),
@@ -53,20 +52,19 @@ class _DepositPageState extends ConsumerState<DepositPage> {
                           keyboardType: TextInputType.phone,
                           hintText: 'Phone number',
                           prefixText: '+ 234 ',
-                          inputFormatters: [CustomTextInputFormatter()],
+                          inputFormatters: [PhoneNumberInputFormatter()],
                           prefixIcon: const Icon(CupertinoIcons.phone),
-                          // validator: Controller.phoneNumberValidator,
+                          validator: Controller.phoneNumberValidator,
                         ),
                         CustomTextFormField(
                           controller: _amountController,
                           focusNode: _amountFocusNode,
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          inputFormatters: [NumberInputFormatter()],
                           hintText: 'Amount',
+                          onEditingComplete: Controller.updateNumber(_amountController),
                           prefixIcon: const Icon(CupertinoIcons.money_dollar),
-                          // validator: Controller.emailValidator,
+                          validator: Controller.amount,
                         ),
                       ],
                     ),

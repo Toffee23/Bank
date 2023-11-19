@@ -38,7 +38,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      onTap: Controller.onFocusField,
       child: Scaffold(
           backgroundColor: Colors.grey[300],
           appBar: AppBar(
@@ -94,7 +94,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                             keyboardType: TextInputType.phone,
                             hintText: 'Phone number',
                             prefixText: '+ 234 ',
-                            inputFormatters: [CustomTextInputFormatter()],
+                            inputFormatters: [PhoneNumberInputFormatter()],
                             prefixIcon: const Icon(CupertinoIcons.phone),
                             validator: Controller.phoneNumberValidator,
                           ),

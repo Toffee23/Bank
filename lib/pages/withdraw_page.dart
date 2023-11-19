@@ -33,7 +33,7 @@ class _WithDrawPageState extends ConsumerState<WithDrawPage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      onTap: Controller.onFocusField,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Withdraw Money'),
@@ -64,7 +64,7 @@ class _WithDrawPageState extends ConsumerState<WithDrawPage> {
                           keyboardType: TextInputType.phone,
                           hintText: 'Phone number',
                           prefixText: '+ 234 ',
-                          inputFormatters: [CustomTextInputFormatter()],
+                          inputFormatters: [PhoneNumberInputFormatter()],
                           prefixIcon: const Icon(CupertinoIcons.phone),
                           // validator: Controller.phoneNumberValidator,
                         ),

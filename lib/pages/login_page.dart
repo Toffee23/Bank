@@ -27,7 +27,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      onTap: Controller.onFocusField,
       child: Scaffold(
         backgroundColor: Colors.grey.shade300,
         appBar: AppBar(

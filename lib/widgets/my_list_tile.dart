@@ -26,12 +26,9 @@ class MyListTile extends StatelessWidget {
           width: 60,
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.grey.shade400.withOpacity(.5)
-            )
-          ),
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey.shade400.withOpacity(.5))),
           child: Image.asset(iconImagePath),
         ),
         title: Text(
@@ -67,19 +64,19 @@ class TransactionListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: isEven == true
-          ? Colors.grey.shade100 : null,
+        color: isEven == true ? Colors.grey.shade100 : null,
       ),
       child: ListTile(
         leading: const CircleAvatar(
-          child: Icon(Icons.monetization_on),
-        ), //transaction
+            child: Text(
+          '\u20a6',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        )), //transaction
         title: Text(transaction.description,
             style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.blueGrey.shade700)
-        ),
+                color: Colors.blueGrey.shade700)),
         subtitle: Text(
           transaction.date,
           style: const TextStyle(color: Colors.blueGrey),
@@ -88,9 +85,7 @@ class TransactionListTile extends StatelessWidget {
           '${transaction.type == 'credit' ? '+' : '-'}${transaction.amount}',
           style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: transaction.type == 'credit'
-                  ? Colors.green
-                  : Colors.red),
+              color: transaction.type == 'credit' ? Colors.green : Colors.red),
         ), // Transaction amount
         onTap: () {
           // Handle onTap event (if needed)
@@ -99,4 +94,3 @@ class TransactionListTile extends StatelessWidget {
     );
   }
 }
-

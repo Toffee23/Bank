@@ -26,13 +26,7 @@ class HomePage extends ConsumerWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              'Good morning',
-              style: TextStyle(
-                  fontSize: 13,
-                  letterSpacing: .6,
-                  color: Colors.white70.withOpacity(.5)),
-            ),
+            _getDayWidget(),
             const SizedBox(height: 2.0),
             Text(
               'Bidemi Bakare',
@@ -231,3 +225,29 @@ final transactions = [
     'date': '21 October 2023, 11:16PM'
   },
 ];
+
+Widget _getDayWidget() {
+  final now = DateTime.now();
+  if (now.hour < 12) {
+    return Text(
+      'Good Morning',
+      style: TextStyle(
+          fontSize: 13,
+          letterSpacing: .6,
+          color: Colors.white70.withOpacity(.5)),
+    );
+  } else if (now.hour > 11 && now.hour < 17) {
+    return Text(
+      'Good Afternoon',
+      style: TextStyle(
+          fontSize: 13,
+          letterSpacing: .6,
+          color: Colors.white70.withOpacity(.5)),
+    );
+  }
+  return Text(
+    'Good evening',
+    style: TextStyle(
+        fontSize: 13, letterSpacing: .6, color: Colors.white70.withOpacity(.5)),
+  );
+}

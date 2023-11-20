@@ -1,8 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:portfolio/models.dart';
 
-final userProvider = StateProvider<UserModel?>((ref) => null);
-
 class UserModelStateNotifier extends StateNotifier<UserModel> {
   UserModelStateNotifier(UserModel user) : super(user);
 

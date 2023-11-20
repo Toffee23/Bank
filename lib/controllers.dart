@@ -334,21 +334,58 @@ class Controller {
 
   static void onSend(
     BuildContext context,
+    WidgetRef ref,
     GlobalKey<FormState> formKey,
     TextEditingController emailController,
     TextEditingController phoneNumberController,
     TextEditingController amountController,
   ) {
-    final int phoneNumber = int.parse(phoneNumberController.text.trim());
-    final String email = emailController.text.trim();
-    final int amount = int.parse(amountController.text.trim());
-
     if (formKey.currentState?.validate() ?? false) {
-      final SendModel signInModel =
-          SendModel(email: email, amount: amount, recieverPhoneNo: phoneNumber);
-      // _deposit(context, signInModel);
+      final int phoneNumber = int.parse(phoneNumberController.text.trim());
+      final String email = emailController.text.trim();
+      final int amount = int.parse(amountController.text.trim());
+
+      final SendModel model =
+          SendModel(email: email, amount: amount, receiverPhoneNumber: phoneNumber);
+      _send(context, ref, model);
     } else {
       Vibration.vibrate(duration: 100);
     }
+  }
+
+  static Future<void> _send(
+    BuildContext context, WidgetRef ref, SendModel model) async {
+    onFocusField();
+    log(ref.watch(userModelStateNotifierProvider).id);
+    _startSpinner(context, 'Please wait while we process your transaction');
+    ClientApi.send(model)
+        .whenComplete(() => _stopSpinner(context))
+        .then((response) {
+      switch (response) {
+        case RequestStatus.success:
+          final balance = ref.watch(userModelStateNotifierProvider).balance - model.amount;
+          ref.read(userModelStateNotifierProvider.notifier).update(balance: balance);
+          return _showAlertDialog(context,
+              'Withdrawal of ${model.amount.toString().formatToPrice} was success and your new balance is ${balance.toString().formatToPrice}');
+        default:
+          switch (response) {
+            case RequestStatus.insufficientFunds:
+              return _showAlertDialog(context,
+                  'Insufficient Funds.\n\nPlease fund your wallet first by depositing from you local bank or ask a friend to transfer some funds to you.');
+
+            case RequestStatus.failed:
+              return _showAlertDialog(context,
+                  'Your entered phone number did not match any of our account.\n\nPlease check the number and try again.');
+
+            case RequestStatus.networkFailure:
+              return _showAlertDialog(context,
+                  'The transaction could not be completed due to network interruption.\n\nPlease check your network and try again.');
+
+            default:
+              return _showAlertDialog(context,
+                  'Process could not be be completed, please try again.\n\nIf error persists, please reach the admin for rectification.');
+          }
+      }
+    });
   }
 }

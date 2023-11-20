@@ -108,24 +108,6 @@ class DepositModel {
   };
 }
 
-class SendModel {
-  final String email;
-  final int recieverPhoneNo;
-  final int amount;
-
-  SendModel({
-    required this.email,
-    required this.recieverPhoneNo,
-    required this.amount,
-  });
-
-  Map<String, dynamic> toJson() => {
-    'sender_email': email,
-    'reciever_phoneno': recieverPhoneNo,
-    'amount': amount,
-  };
-}
-
 class WithdrawModel {
   final int phone;
   final num amount;
@@ -137,6 +119,24 @@ class WithdrawModel {
 
   Map<String, dynamic> toJson() => {
     'phone': phone,
+    'amount': amount,
+  };
+}
+
+class SendModel {
+  final String email;
+  final int receiverPhoneNumber;
+  final int amount;
+
+  SendModel({
+    required this.email,
+    required this.receiverPhoneNumber,
+    required this.amount,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'sender_email': email,
+    'reciever_phoneno': receiverPhoneNumber,
     'amount': amount,
   };
 }

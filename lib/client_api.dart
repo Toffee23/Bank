@@ -6,15 +6,13 @@ import 'package:http/http.dart' as http;
 import 'package:portfolio/models.dart';
 
 class ClientApi {
-  static const String _baseUrl =
-      'https://bank-app01-f13d87348993.herokuapp.com';
+  static const String _baseUrl = 'https://bank-app01-f13d87348993.herokuapp.com';
   static const String _register = '/api/auth/register';
   static const String _login = '/api/auth/login';
   static const String _deposit = '/api/depoWith/deposit';
   static const String _withdraw = '/api/depoWith/withdraw';
   static const String _transfer = '/api/transact/transfer';
-  static const String _transactionHistory =
-      '/api/transact/transaction-history/:userId';
+  static const String _transactionHistory = '/api/transact/transaction-history';
   static Map<String, String> headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -122,33 +120,7 @@ class ClientApi {
     }
   }
 
-  // static Future<dynamic> send(DepositModel model) async {
-  //   const String url = "$_baseUrl$_transfer";
-
-  //   try {
-  //     final http.Response response = await http.post(
-  //       Uri.parse(url),
-  //       headers: headers,
-  //       body: jsonEncode(model.toJson()),
-  //     );
-
-  //     log('Got response: ${response.body}');
-
-  //     if (response.statusCode == 200) {
-  //       return UserModel.fromJson(jsonDecode(response.body));
-  //     } else {
-  //       return jsonDecode(response.body);
-  //     }
-  //   } on SocketException catch (e) {
-  //     log('Failed due to Network issue $e');
-  //     return RequestStatus.networkFailure;
-  //   } catch (e) {
-  //     log('Failed mostly from the server $e');
-  //     return RequestStatus.unKnownError;
-  //   }
-  // }
-
-  static Future<dynamic> transfer(DepositModel model) async {
+  static Future<dynamic> send(SendModel model) async {
     const String url = "$_baseUrl$_transfer";
 
     try {
@@ -158,10 +130,37 @@ class ClientApi {
         body: jsonEncode(model.toJson()),
       );
 
+      log(response.body);
+      if (response.statusCode == 200) {
+        return RequestStatus.success;
+      } else {
+        if (jsonDecode(response.body) == "Insufficient funds") {
+          return RequestStatus.insufficientFunds;
+        }
+        return RequestStatus.failed;
+      }
+    } on SocketException catch (e) {
+      log('Failed due to Network issue $e');
+      return RequestStatus.networkFailure;
+    } catch (e) {
+      log('Failed mostly from the server $e');
+      return RequestStatus.unKnownError;
+    }
+  }
+
+  static Future<dynamic> transfer(String id) async {
+    final String url = "$_baseUrl$_transfer/$id";
+
+    try {
+      final http.Response response = await http.get(
+        Uri.parse(url),
+        headers: headers,
+      );
+
       log('Got response: ${response.body}');
 
       if (response.statusCode == 200) {
-        return UserModel.fromJson(jsonDecode(response.body));
+        return RequestStatus.success;
       } else {
         return jsonDecode(response.body);
       }
@@ -175,31 +174,6 @@ class ClientApi {
   }
 }
 
-//  static Future<dynamic> transfer(DepositModel model) async {
-//     const String url = "$_baseUrl$_transactionHistory";
-
-//     try {
-//       final http.Response response = await http.get(
-//         Uri.parse(url),
-//         headers: headers,
-//         body: jsonEncode(model.toJson()),
-//       );
-
-//       log('Got response: ${response.body}');
-
-//       if (response.statusCode == 200) {
-//         return UserModel.fromJson(jsonDecode(response.body));
-//       } else {
-//         return jsonDecode(response.body);
-//       }
-//     } on SocketException catch (e) {
-//       log('Failed due to Network issue $e');
-//       return RequestStatus.networkFailure;
-//     } catch (e) {
-//       log('Failed mostly from the server $e');
-//       return RequestStatus.unKnownError;
-//     }
-//   }
 enum RequestStatus {
   networkFailure,
   serverError,

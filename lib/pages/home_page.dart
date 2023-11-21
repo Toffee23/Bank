@@ -11,6 +11,8 @@ import 'package:portfolio/widgets/my_button.dart';
 import 'package:portfolio/widgets/my_card.dart';
 import 'package:portfolio/widgets/my_list_tile.dart';
 
+import '../controllers.dart';
+
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
@@ -59,7 +61,8 @@ class HomePage extends ConsumerWidget {
               MyCard(
                 balance: userProvider.balance.toString().formatToPrice,
                 phoneNumber: userProvider.phoneNumber,
-                color: Colors.blue,
+                isVisible: ref.watch(showBalanceProvider),
+                onVisibility: () => Controller.onVisibility(ref),
               ),
               const SizedBox(height: 18),
               Row(

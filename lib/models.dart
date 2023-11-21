@@ -126,7 +126,7 @@ class WithdrawModel {
 class SendModel {
   final String email;
   final int receiverPhoneNumber;
-  final int amount;
+  final num amount;
 
   SendModel({
     required this.email,
@@ -136,7 +136,7 @@ class SendModel {
 
   Map<String, dynamic> toJson() => {
     'sender_email': email,
-    'reciever_phoneno': receiverPhoneNumber,
+    'receiver_phone': receiverPhoneNumber,
     'amount': amount,
   };
 }

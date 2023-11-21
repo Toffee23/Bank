@@ -261,7 +261,7 @@ class Controller {
           final balance = ref.watch(userModelStateNotifierProvider).balance + model.amount;
           ref.read(userModelStateNotifierProvider.notifier).update(balance: balance);
           return _showAlertDialog(context,
-            'Deposit of ${model.amount.toString().formatToPrice} was success and your new balance is ${balance.toString().formatToPrice}');
+            'Deposit of ₦${model.amount.toString().formatToPrice} was success and your new balance is ₦${balance.toString().formatToPrice}');
         default:
           switch (response) {
             case RequestStatus.failed:
@@ -309,7 +309,7 @@ class Controller {
           final balance = ref.watch(userModelStateNotifierProvider).balance - model.amount;
           ref.read(userModelStateNotifierProvider.notifier).update(balance: balance);
           return _showAlertDialog(context,
-            'Withdrawal of ${model.amount.toString().formatToPrice} was success and your new balance is ${balance.toString().formatToPrice}');
+            'Withdrawal of ₦${model.amount.toString().formatToPrice} was success and your new balance is ₦${balance.toString().formatToPrice}');
         default:
           switch (response) {
             case RequestStatus.insufficientFunds:
@@ -343,7 +343,7 @@ class Controller {
     if (formKey.currentState?.validate() ?? false) {
       final int phoneNumber = int.parse(phoneNumberController.text.trim());
       final String email = emailController.text.trim();
-      final int amount = int.parse(amountController.text.trim());
+      final amount = num.parse(amountController.text.trim().formatToString);
 
       final SendModel model =
           SendModel(email: email, amount: amount, receiverPhoneNumber: phoneNumber);
@@ -356,7 +356,6 @@ class Controller {
   static Future<void> _send(
     BuildContext context, WidgetRef ref, SendModel model) async {
     onFocusField();
-    log(ref.watch(userModelStateNotifierProvider).id);
     _startSpinner(context, 'Please wait while we process your transaction');
     ClientApi.send(model)
         .whenComplete(() => _stopSpinner(context))
@@ -366,26 +365,30 @@ class Controller {
           final balance = ref.watch(userModelStateNotifierProvider).balance - model.amount;
           ref.read(userModelStateNotifierProvider.notifier).update(balance: balance);
           return _showAlertDialog(context,
-              'Withdrawal of ${model.amount.toString().formatToPrice} was success and your new balance is ${balance.toString().formatToPrice}');
-        default:
-          switch (response) {
-            case RequestStatus.insufficientFunds:
-              return _showAlertDialog(context,
-                  'Insufficient Funds.\n\nPlease fund your wallet first by depositing from you local bank or ask a friend to transfer some funds to you.');
+              'Transfer of ₦${model.amount.toString().formatToPrice} was success and your new balance is ₦${balance.toString().formatToPrice}');
 
-            case RequestStatus.failed:
-              return _showAlertDialog(context,
-                  'Your entered phone number did not match any of our account.\n\nPlease check the number and try again.');
+          case RequestStatus.insufficientFunds:
+            return _showAlertDialog(context,
+                'Insufficient Funds.\n\nPlease fund your wallet first by depositing from you local bank or ask a friend to transfer some funds to you.');
 
-            case RequestStatus.networkFailure:
-              return _showAlertDialog(context,
-                  'The transaction could not be completed due to network interruption.\n\nPlease check your network and try again.');
+          case RequestStatus.failed:
+            return _showAlertDialog(context,
+                'Your entered phone number did not match any of our account.\n\nPlease check the number and try again.');
 
-            default:
-              return _showAlertDialog(context,
-                  'Process could not be be completed, please try again.\n\nIf error persists, please reach the admin for rectification.');
-          }
+          case RequestStatus.networkFailure:
+            return _showAlertDialog(context,
+                'The transaction could not be completed due to network interruption.\n\nPlease check your network and try again.');
+
+          default:
+            return _showAlertDialog(context,
+                'Process could not be be completed, please try again.\n\nIf error persists, please reach the admin for rectification.');
       }
+    });
+  }
+
+  static onVisibility(WidgetRef ref) {
+    ref.read(showBalanceProvider.notifier).update((state) {
+      return !state;
     });
   }
 }

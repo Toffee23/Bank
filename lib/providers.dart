@@ -1,6 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:portfolio/models.dart';
 
+final showBalanceProvider = StateProvider<bool>((ref) {
+  return true;
+});
+
 class UserModelStateNotifier extends StateNotifier<UserModel> {
   UserModelStateNotifier(UserModel user) : super(user);
 

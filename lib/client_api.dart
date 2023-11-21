@@ -130,11 +130,13 @@ class ClientApi {
         body: jsonEncode(model.toJson()),
       );
 
+      log(model.toJson().toString());
       log(response.body);
       if (response.statusCode == 200) {
         return RequestStatus.success;
       } else {
-        if (jsonDecode(response.body) == "Insufficient funds") {
+        // if (jsonDecode(response.body) == "Insufficient funds") {
+        if (response.body == "Insufficient funds") {
           return RequestStatus.insufficientFunds;
         }
         return RequestStatus.failed;

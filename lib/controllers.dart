@@ -164,7 +164,7 @@ class Controller {
     if (value == null || value.isEmpty) {
       return 'Please enter your email';
     }
-    if (value.isNotEmail) {
+    if (value.trim().isNotEmail) {
       return 'Please enter a valid email';
     }
     return null;
@@ -174,7 +174,7 @@ class Controller {
     if (value == null || value.isEmpty) {
       return 'Please enter a phone number';
     }
-    if (value.length != 10) {
+    if (value.trim().length != 10) {
       return 'Phone number should be 11 in length';
     }
     return null;
@@ -186,11 +186,11 @@ class Controller {
     }
     String msg = 'Password must contain ;';
 
-    if (value.length < 6) msg += '\nat least 7 characters';
-    if (!value.hasDigit) msg += '\nat least one digit';
-    if (!value.hasLowercase) msg += '\nat least one lowercase';
-    if (!value.hasUppercase) msg += '\nat least one uppercase';
-    if (!value.hasSpecialCharacters) msg += '\nat least one special character';
+    if (value.trim().length < 6) msg += '\nat least 7 characters';
+    if (!value.trim().hasDigit) msg += '\nat least one digit';
+    if (!value.trim().hasLowercase) msg += '\nat least one lowercase';
+    if (!value.trim().hasUppercase) msg += '\nat least one uppercase';
+    if (!value.trim().hasSpecialCharacters) msg += '\nat least one special character';
     if (msg.contains('\n')) return msg;
 
     return null;
@@ -200,8 +200,15 @@ class Controller {
     if (value1 == null || value1.isEmpty) {
       return 'Please enter a password';
     }
-    if (value1 != value2) {
+    if (value1.trim() != value2.trim()) {
       return 'Password mismatch';
+    }
+    return null;
+  }
+
+  static String? loginPassword1Validator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a password';
     }
     return null;
   }
@@ -332,14 +339,14 @@ class Controller {
     });
   }
 
-  static void onSend(
+  static Future<void> onSend(
     BuildContext context,
     WidgetRef ref,
     GlobalKey<FormState> formKey,
     TextEditingController emailController,
     TextEditingController phoneNumberController,
     TextEditingController amountController,
-  ) {
+  ) async {
     if (formKey.currentState?.validate() ?? false) {
       final int phoneNumber = int.parse(phoneNumberController.text.trim());
       final String email = emailController.text.trim();

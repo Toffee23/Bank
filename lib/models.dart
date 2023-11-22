@@ -1,3 +1,6 @@
+import 'package:intl/intl.dart';
+import 'package:portfolio/utils.dart';
+
 class RegisterModel {
   final String email;
   final String phone;
@@ -139,4 +142,63 @@ class SendModel {
     'receiver_phone': receiverPhoneNumber,
     'amount': amount,
   };
+}
+
+class TransactionHistoryModel {
+  final String id;
+  final String sender;
+  final int receiver;
+  final String amount;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String description;
+  final String type;
+
+  TransactionHistoryModel({
+    required this.id,
+    required this.sender,
+    required this.receiver,
+    required this.amount,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.description,
+    required this.type,
+  });
+
+  String get date => DateFormat('dd MMMM yyyy, hh:mm a').format(createdAt);
+
+  factory TransactionHistoryModel.fromJson(Map<String, dynamic> json) =>
+    TransactionHistoryModel(
+      id: json["_id"],
+      sender: json["sender"],
+      receiver: json["receiver"],
+      amount: json["amount"].toString().formatToPrice,
+      description: json["description"] ?? "No description",
+      type: json["type"] ?? "debit",
+      createdAt: DateTime.parse(json["createdAt"]),
+      updatedAt: DateTime.parse(json["updatedAt"]),
+    );
+}
+
+class Transaction {
+  final String description;
+  final String date;
+  final String type;
+  final String amount;
+
+  Transaction({
+    required this.description,
+    required this.date,
+    required this.type,
+    required this.amount,
+  });
+
+  factory Transaction.fromJson(Map<String, dynamic> json) {
+    return Transaction(
+      description: json['description'],
+      date: json['date'],
+      type: json['type'],
+      amount: json['amount'],
+    );
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/pages/transaction_page.dart';
+
+import '../models.dart';
 
 class MyListTile extends StatelessWidget {
   final String iconImagePath;
@@ -58,7 +59,7 @@ class TransactionListTile extends StatelessWidget {
     required this.transaction,
   }) : super(key: key);
   final bool? isEven;
-  final Transaction transaction;
+  final TransactionHistoryModel transaction;
 
   @override
   Widget build(BuildContext context) {
@@ -82,14 +83,12 @@ class TransactionListTile extends StatelessWidget {
           style: const TextStyle(color: Colors.blueGrey),
         ),
         trailing: Text(
-          '${transaction.type == 'credit' ? '+' : '-'}${transaction.amount}',
+          '${transaction.type == 'credit' ? '+' : '-'}₦ ${transaction.amount}',
           style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: transaction.type == 'credit' ? Colors.green : Colors.red),
-        ), // Transaction amount
-        onTap: () {
-          // Handle onTap event (if needed)
-        },
+            fontWeight: FontWeight.bold,
+            color: transaction.type == 'credit' ? Colors.green : Colors.red),
+        ),
+        onTap: () {},
       ),
     );
   }

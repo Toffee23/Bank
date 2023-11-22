@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:portfolio/client_api.dart';
 import 'package:portfolio/models.dart';
 
 final showBalanceProvider = StateProvider<bool>((ref) {
@@ -42,4 +43,10 @@ final userModelStateNotifierProvider = StateNotifierProvider<UserModelStateNotif
     v: '',
   );
   return UserModelStateNotifier(initialUser);
+});
+
+final transactionsProvider = StreamProvider<List<TransactionHistoryModel>?>((ref) async* {
+  final userId = ref.watch(userModelStateNotifierProvider).id;
+  final transactionHistory = await ClientApi.transactionHistory(userId);
+  yield* Stream.value(transactionHistory?.reversed.toList());
 });

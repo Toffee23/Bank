@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:portfolio/pages/deposit_page.dart';
 import 'package:portfolio/pages/send_page.dart';
-import 'package:portfolio/pages/transaction_page.dart';
 import 'package:portfolio/pages/withdraw_page.dart';
 import 'package:portfolio/providers.dart';
 import 'package:portfolio/utils.dart';
@@ -12,6 +11,7 @@ import 'package:portfolio/widgets/my_card.dart';
 import 'package:portfolio/widgets/my_list_tile.dart';
 
 import '../controllers.dart';
+import '../models.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -133,23 +133,60 @@ class HomePage extends ConsumerWidget {
                       Expanded(
                         child: TabBarView(
                           children: <Widget>[
-                            ListView.separated(
-                              itemCount: transactions.length,
-                              separatorBuilder: (_, __) =>
-                                  const Divider(height: 0.0),
-                              itemBuilder: (BuildContext context, int index) {
-                                final data = transactions.elementAt(index);
-                                final transaction = Transaction.fromJson(data);
-                                return TransactionListTile(
-                                  transaction: transaction,
-                                );
+                            ref.watch(transactionsProvider).when(
+                              data: (transactions) => transactions != null && transactions.isNotEmpty ?
+                                ListView.separated(
+                                  itemCount: transactions.length,
+                                  separatorBuilder: (_, __) => const Divider(height: 0.0),
+                                  itemBuilder: (BuildContext context, int index) {
+                                    final transaction = transactions.elementAt(index);
+                                    return TransactionListTile(
+                                      transaction: transaction,
+                                    );
+                                  },
+                                  ) : const Center(child: Text('You have not made any transaction.')),
+                              error: (_, __) => const Center(child: Text('Error')),
+                              loading: () => const Center(child: Text('Loading')),
+                            ),
+
+                            ref.watch(transactionsProvider).when(
+                              data: (data) {
+                                final transactions = data?.where((e) => e.type == 'credit').toList()??[];
+                                return transactions.isNotEmpty ?
+                                  ListView.separated(
+                                    itemCount: transactions.length,
+                                    separatorBuilder: (_, __) => const Divider(height: 0.0),
+                                    itemBuilder: (BuildContext context, int index) {
+                                      final transaction = transactions.elementAt(index);
+                                      return TransactionListTile(
+                                        transaction: transaction,
+                                      );
+                                    },
+                                  ) :
+                                  const Center(child: Text('You have not made any credit transaction'),);
                               },
+                              error: (_, __) => const Center(child: Text('Error')),
+                              loading: () => const Center(child: Text('Loading')),
                             ),
-                            const Center(
-                              child: Text('Tab 2 Content'),
-                            ),
-                            const Center(
-                              child: Text('Tab 3 Content'),
+
+                            ref.watch(transactionsProvider).when(
+                              data: (data) {
+                                final transactions = data?.where((e) => e.type == 'debit').toList()??[];
+                                return transactions.isNotEmpty ?
+                                ListView.separated(
+                                  itemCount: transactions.length,
+                                  separatorBuilder: (_, __) => const Divider(height: 0.0),
+                                  itemBuilder: (BuildContext context, int index) {
+                                    final transaction = transactions.elementAt(index);
+                                    return TransactionListTile(
+                                      transaction: transaction,
+                                    );
+                                  },
+                                ) :
+                                const Center(child: Text('You have not made any debit transaction'),);
+                              },
+                              error: (_, __) => const Center(child: Text('Error')),
+                              loading: () => const Center(child: Text('Loading')),
                             ),
                           ],
                         ),
@@ -166,7 +203,7 @@ class HomePage extends ConsumerWidget {
   }
 }
 
-final transactions = [
+final transactionsA = [
   {
     'description': 'Send Money to My Wife',
     'amount': '\u20a625.00',

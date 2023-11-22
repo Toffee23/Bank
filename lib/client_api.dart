@@ -54,7 +54,6 @@ class ClientApi {
       );
 
       if (response.statusCode == 200) {
-        print(response.body);
         return UserModel.fromJson(jsonDecode(response.body));
       } else {
         return jsonDecode(response.body);
@@ -130,13 +129,10 @@ class ClientApi {
         body: jsonEncode(model.toJson()),
       );
 
-      log(model.toJson().toString());
-      log(response.body);
       if (response.statusCode == 200) {
         return RequestStatus.success;
       } else {
-        // if (jsonDecode(response.body) == "Insufficient funds") {
-        if (response.body == "Insufficient funds") {
+        if (jsonDecode(response.body) == "Insufficient balance") {
           return RequestStatus.insufficientFunds;
         }
         return RequestStatus.failed;
@@ -172,6 +168,28 @@ class ClientApi {
     } catch (e) {
       log('Failed mostly from the server $e');
       return RequestStatus.unKnownError;
+    }
+  }
+
+  static Future<List<TransactionHistoryModel>?> transactionHistory(String id) async {
+    final String url = "$_baseUrl$_transactionHistory/$id";
+
+    try {
+      final http.Response response = await http.get(Uri.parse(url), headers: headers);
+
+      if (response.statusCode == 200) {
+        List<Map<String, dynamic>> parsed = jsonDecode(response.body).cast<Map<String, dynamic>>();
+        return parsed.map<TransactionHistoryModel>((json) =>
+            TransactionHistoryModel.fromJson(json)).toList();
+      } else {
+        return null;
+      }
+    } on SocketException catch (e) {
+      log('Failed due to Network issue $e');
+      return null;
+    } catch (e) {
+      log('Failed mostly from the server $e');
+      return null;
     }
   }
 }

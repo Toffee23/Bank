@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../models.dart';
+
 class TransactionPage extends StatelessWidget {
   final List<Transaction> transactions;
 
@@ -120,29 +122,6 @@ class TransactionPage extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class Transaction {
-  final String description;
-  final String date;
-  final String type;
-  final String amount;
-
-  Transaction({
-    required this.description,
-    required this.date,
-    required this.type,
-    required this.amount,
-  });
-
-  factory Transaction.fromJson(Map<String, dynamic> json) {
-    return Transaction(
-      description: json['description'],
-      date: json['date'],
-      type: json['type'],
-      amount: json['amount'],
     );
   }
 }

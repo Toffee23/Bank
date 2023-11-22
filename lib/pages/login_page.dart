@@ -88,7 +88,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                   hintText: 'Password',
                                   prefixIcon:
                                       const Icon(Icons.lock_outline_rounded),
-                                  // validator: Controller.password1Validator,
+                                  validator: Controller.loginPassword1Validator,
                                   suffixIcon: IconButton(
                                       onPressed: () => _obscureTextListener
                                           .value = !obscureText,

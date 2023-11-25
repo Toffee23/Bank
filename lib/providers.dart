@@ -46,7 +46,7 @@ final userModelStateNotifierProvider = StateNotifierProvider<UserModelStateNotif
 });
 
 final transactionsProvider = StreamProvider<List<TransactionHistoryModel>?>((ref) async* {
-  final userId = ref.watch(userModelStateNotifierProvider).id;
-  final transactionHistory = await ClientApi.transactionHistory(userId);
-  yield* Stream.value(transactionHistory?.reversed.toList());
+  final phoneNumber = ref.watch(userModelStateNotifierProvider).phoneNumber;
+  final transactionHistory = await ClientApi.transactionHistory(phoneNumber);
+  yield* Stream.value(transactionHistory);
 });

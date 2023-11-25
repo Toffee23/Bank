@@ -70,7 +70,7 @@ class TransactionListTile extends StatelessWidget {
       child: ListTile(
         leading: const CircleAvatar(
             child: Text(
-          '\u20a6',
+          '₦',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         )), //transaction
         title: Text(transaction.description,
@@ -83,10 +83,10 @@ class TransactionListTile extends StatelessWidget {
           style: const TextStyle(color: Colors.blueGrey),
         ),
         trailing: Text(
-          '${transaction.type == 'credit' ? '+' : '-'}₦ ${transaction.amount}',
+          '${transaction.isCredit ? '+' : '-'}₦ ${transaction.amount}',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: transaction.type == 'credit' ? Colors.green : Colors.red),
+            color: transaction.isCredit ? Colors.green : Colors.red),
         ),
         onTap: () {},
       ),

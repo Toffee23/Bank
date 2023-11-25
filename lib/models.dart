@@ -146,37 +146,40 @@ class SendModel {
 
 class TransactionHistoryModel {
   final String id;
-  final String sender;
-  final int receiver;
   final String amount;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime timestamp;
   final String description;
   final String type;
 
   TransactionHistoryModel({
     required this.id,
-    required this.sender,
-    required this.receiver,
     required this.amount,
-    required this.createdAt,
-    required this.updatedAt,
+    required this.timestamp,
     required this.description,
     required this.type,
   });
 
-  String get date => DateFormat('dd MMMM yyyy, hh:mm a').format(createdAt);
+  String get date => DateFormat('dd MMMM yyyy, hh:mm a').format(timestamp);
+
+  bool get isCredit {
+    switch (type) {
+      case 'deposit':
+        return true;
+      case 'send':
+      case 'withdrawal':
+        return false;
+      default:
+        return false;
+    }
+  }
 
   factory TransactionHistoryModel.fromJson(Map<String, dynamic> json) =>
     TransactionHistoryModel(
       id: json["_id"],
-      sender: json["sender"],
-      receiver: json["receiver"],
       amount: json["amount"].toString().formatToPrice,
-      description: json["description"] ?? "No description",
+      description: json["description"],
       type: json["type"] ?? "debit",
-      createdAt: DateTime.parse(json["createdAt"]),
-      updatedAt: DateTime.parse(json["updatedAt"]),
+      timestamp: DateTime.parse(json["timestamp"]),
     );
 }
 

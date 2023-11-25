@@ -130,7 +130,7 @@ class Controller {
           break;
         default:
           switch (response) {
-            case 'wrong credentilas':
+            case RequestStatus.incorrectCredentials:
               return _showAlertDialog(context,
                   'Incorrect email or password. Please cross check your credentials and try again.');
 

@@ -53,9 +53,14 @@ class ClientApi {
         body: jsonEncode(model.toJson()),
       );
 
+      log(response.body);
+
       if (response.statusCode == 200) {
         return UserModel.fromJson(jsonDecode(response.body));
       } else {
+        if (jsonDecode(response.body) == "Incorrect Password") {
+          return RequestStatus.incorrectCredentials;
+        }
         return jsonDecode(response.body);
       }
     } on SocketException catch (e) {
@@ -171,8 +176,8 @@ class ClientApi {
     }
   }
 
-  static Future<List<TransactionHistoryModel>?> transactionHistory(String id) async {
-    final String url = "$_baseUrl$_transactionHistory/$id";
+  static Future<List<TransactionHistoryModel>?> transactionHistory(int phoneNumber) async {
+    final String url = "$_baseUrl$_transactionHistory/$phoneNumber";
 
     try {
       final http.Response response = await http.get(Uri.parse(url), headers: headers);
@@ -200,5 +205,6 @@ enum RequestStatus {
   unKnownError,
   success,
   failed,
-  insufficientFunds
+  insufficientFunds,
+  incorrectCredentials
 }

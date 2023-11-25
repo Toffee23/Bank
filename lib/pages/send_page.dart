@@ -52,7 +52,7 @@ class _SendPageState extends ConsumerState<SendPage> {
                         CustomTextFormField(
                           controller: _emailController,
                           focusNode: _emailFocusNode,
-                          keyboardType: TextInputType.text,
+                          keyboardType: TextInputType.emailAddress,
                           hintText: 'Sender\'s Email',
                           prefixIcon: const Icon(CupertinoIcons.mail),
                           validator: Controller.emailValidator,

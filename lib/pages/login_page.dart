@@ -138,10 +138,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         ),
                         TextButton(
                           onPressed: () => Controller.onRegisterNow(context),
-                          child: const Text(
+                          child: Text(
                             'Register Now',
                             style: TextStyle(
-                              color: Colors.blue,
+                              color: Theme.of(context).primaryColor,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

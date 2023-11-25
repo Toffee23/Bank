@@ -54,14 +54,14 @@ class UserModel {
   });
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'email': email,
-    'phoneNumber': phoneNumber,
-    'balance': balance,
-    'createAt': createAt,
-    'updatedAt': updatedAt,
-    'v': v,
-  };
+        'id': id,
+        'email': email,
+        'phoneNumber': phoneNumber,
+        'balance': balance,
+        'createAt': createAt,
+        'updatedAt': updatedAt,
+        'v': v,
+      };
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -106,9 +106,9 @@ class DepositModel {
   });
 
   Map<String, dynamic> toJson() => {
-    'phone': phone,
-    'amount': amount,
-  };
+        'phone': phone,
+        'amount': amount,
+      };
 }
 
 class WithdrawModel {
@@ -121,9 +121,9 @@ class WithdrawModel {
   });
 
   Map<String, dynamic> toJson() => {
-    'phone': phone,
-    'amount': amount,
-  };
+        'phone': phone,
+        'amount': amount,
+      };
 }
 
 class SendModel {
@@ -138,10 +138,10 @@ class SendModel {
   });
 
   Map<String, dynamic> toJson() => {
-    'sender_email': email,
-    'receiver_phone': receiverPhoneNumber,
-    'amount': amount,
-  };
+        'sender_email': email,
+        'receiver_phone': receiverPhoneNumber,
+        'amount': amount,
+      };
 }
 
 class TransactionHistoryModel {
@@ -149,6 +149,7 @@ class TransactionHistoryModel {
   final String amount;
   final DateTime timestamp;
   final String description;
+
   final String type;
 
   TransactionHistoryModel({
@@ -174,13 +175,14 @@ class TransactionHistoryModel {
   }
 
   factory TransactionHistoryModel.fromJson(Map<String, dynamic> json) =>
-    TransactionHistoryModel(
-      id: json["_id"],
-      amount: json["amount"].toString().formatToPrice,
-      description: json["description"],
-      type: json["type"] ?? "debit",
-      timestamp: DateTime.parse(json["timestamp"]),
-    );
+      TransactionHistoryModel(
+        id: json["_id"],
+        amount: json["amount"].toString().formatToPrice,
+        description: json["description"],
+        type: json["type"] ?? "debit",
+        timestamp:
+            DateTime.parse(json["timestamp"] ?? DateTime.now().toString()),
+      );
 }
 
 class Transaction {

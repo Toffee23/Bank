@@ -6,7 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:portfolio/models.dart';
 
 class ClientApi {
-  static const String _baseUrl = 'https://bank-app01-f13d87348993.herokuapp.com';
+  static const String _baseUrl =
+      'https://bank-app01-f13d87348993.herokuapp.com';
   static const String _register = '/api/auth/register';
   static const String _login = '/api/auth/login';
   static const String _deposit = '/api/depoWith/deposit';
@@ -27,7 +28,7 @@ class ClientApi {
         headers: headers,
         body: jsonEncode(model.toJson()),
       );
-
+      log(response.body);
       if (response.statusCode == 200) {
         return UserModel.fromJson(jsonDecode(response.body));
       } else {
@@ -176,16 +177,23 @@ class ClientApi {
     }
   }
 
-  static Future<List<TransactionHistoryModel>?> transactionHistory(int phoneNumber) async {
+  static Future<List<TransactionHistoryModel>?> transactionHistory(
+      int phoneNumber) async {
     final String url = "$_baseUrl$_transactionHistory/$phoneNumber";
 
     try {
-      final http.Response response = await http.get(Uri.parse(url), headers: headers);
+      final http.Response response =
+          await http.get(Uri.parse(url), headers: headers);
+      log('message');
+      log(response.body);
 
       if (response.statusCode == 200) {
-        List<Map<String, dynamic>> parsed = jsonDecode(response.body).cast<Map<String, dynamic>>();
-        return parsed.map<TransactionHistoryModel>((json) =>
-            TransactionHistoryModel.fromJson(json)).toList();
+        List<Map<String, dynamic>> parsed =
+            jsonDecode(response.body).cast<Map<String, dynamic>>();
+        return parsed
+            .map<TransactionHistoryModel>(
+                (json) => TransactionHistoryModel.fromJson(json))
+            .toList();
       } else {
         return null;
       }
